@@ -1,0 +1,103 @@
+1. Who owns DNS & can I change DNS?
+The DNS (Domain Name System) is coordinated globally by ICANN (Internet Corporation for Assigned Names and Numbers), which oversees how domain names map to IP addresses.
+You can change the DNS server you use — for example, switching from your ISP’s DNS to Google DNS (8.8.8.8) or Cloudflare (1.1.1.1) by modifying settings on your device, operating system, or router.
+
+2. How DNS handles a request
+Resolver — Your device asks the configured DNS resolver for an IP.
+
+Root server — Points to the correct Top-Level Domain (TLD) server (e.g., .com).
+
+TLD server — Points to the authoritative name server for the domain.
+
+Authoritative server — Provides the actual IP address.
+
+Response — Resolver caches and returns the IP to your device.
+
+3. Session (why a separate layer?)
+The Session layer in networking ensures that long-running communications are maintained properly. It manages:
+
+Opening and closing connections
+
+Recovering from dropped connections
+
+Keeping track of data flow between two systems
+By separating it, developers can build applications without worrying about manually managing session details.
+
+4. Connecting to Wi-Fi & sharing an existing IP
+When multiple devices connect to the same Wi-Fi, they often share a single public IP address using NAT (Network Address Translation).
+NAT maps each device’s private IP to the shared public IP so they can all access the internet without IP conflicts.
+
+5. UTF-8 length
+UTF-8 encodes characters using 1 to 4 bytes:
+
+ASCII letters/numbers → 1 byte (a)
+
+Special characters → more bytes (€ takes 3 bytes)
+
+Some emojis → 4 bytes
+
+6. Can we use HTTP with UDP?
+Standard HTTP runs over TCP for reliability.
+However, HTTP/3 is built on QUIC, which uses UDP for faster performance, especially on unstable networks.
+
+7. More about WebSockets
+WebSockets create a persistent, full-duplex (two-way) communication channel between client and server over a single TCP connection.
+Unlike HTTP, which is request–response based, WebSockets allow real-time data flow without repeatedly reconnecting.
+
+8. More about Segments
+In TCP, a segment is the data unit that contains:
+
+TCP header (source port, destination port, sequence number, etc.)
+
+Payload (actual data)
+Segments ensure reliable delivery and proper ordering.
+
+9. What are all port numbers?
+0–1023 → Well-known ports (HTTP: 80, HTTPS: 443, FTP: 21)
+
+1024–49151 → Registered ports (for applications and services)
+
+49152–65535 → Dynamic or private ports (used for temporary connections)
+
+10. Can we use another port to another IP?
+Yes. This is done using port forwarding — routing traffic from a port on one IP to a port on another IP.
+
+11. How IPs map to ports
+The OS keeps a connection table mapping IP addresses and ports (e.g., 192.168.1.5:5000) so data goes to the correct application.
+
+12. Protocols in the 7 layers
+Application — HTTP, SMTP, FTP
+
+Presentation — SSL/TLS, data formatting (JSON, XML)
+
+Session — RPC, NetBIOS
+
+Transport — TCP, UDP
+
+Network — IP, ICMP
+
+Data Link — Ethernet, PPP
+
+Physical — Cables, fiber, radio signals
+
+13. Alternate solutions for WebSockets
+Server-Sent Events (SSE) — Server pushes updates over HTTP.
+
+Long polling — Client keeps making HTTP requests and waits for updates.
+
+14. What is an IP & how does it identify a host?
+An IP (Internet Protocol address) is a unique number assigned to a device on a network.
+It has two parts:
+
+Network ID — identifies the network.
+
+Host ID — identifies the device in that network.
+
+15. Transport layer connection bridge
+The Transport layer acts as a bridge between application-layer protocols (like HTTP, SMTP) and the network layer. It breaks data into chunks, ensures reliable delivery, and reassembles data at the other end.
+
+16. Third parties who verify certificates
+Certificate Authorities (CAs) like DigiCert, GlobalSign, and Let’s Encrypt verify ownership of domains and issue SSL/TLS certificates to enable secure HTTPS connections.
+
+17. Gzip working
+Gzip is a compression method that uses the DEFLATE algorithm to reduce file size. It finds repeated patterns in data and replaces them with shorter representations, making downloads faster

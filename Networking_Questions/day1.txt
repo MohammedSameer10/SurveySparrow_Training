@@ -1,0 +1,95 @@
+1. What happens when you write google.com in the browser?
+
+DNS lookup — The browser checks its DNS cache (browser → OS → router → ISP) to find the IP address for google.com. If not found, it queries a DNS server.
+
+TCP 3-way handshake — Your browser and Google’s server establish a connection:
+
+SYN → request to start communication.
+
+SYN-ACK → server acknowledges.
+
+ACK → browser confirms.
+
+TLS handshake (for HTTPS) — Browser and server exchange certificates and keys to establish encryption.
+
+HTTP request — Browser sends a request like GET / to the server.
+
+Server response — Google’s server sends back HTML, CSS, JS, images, etc.
+
+Rendering — The browser parses HTML, builds the DOM, applies styles, runs JavaScript, and displays the page.
+
+2. Stateful vs Stateless
+Stateful — The server remembers previous interactions.
+Example: Online banking. Once you log in, the server keeps track of your session so it knows which account is yours in later requests.
+
+Stateless — Each request is independent, and the server does not remember anything between requests.
+Example: A simple REST API that returns weather data — every request must include all necessary details like location and API key.
+
+3. Drawback of Stateless
+Because the server doesn’t remember past interactions, the client must send all relevant information with every request. This can increase network usage and processing time.
+
+4. How to avoid Stateless drawbacks
+You can maintain state by:
+
+Cookies — Stored in the browser and sent automatically with requests.
+
+Sessions — Stored on the server, linked to a session ID in a cookie.
+
+Tokens — Like JWT, sent with each request for authentication.
+
+5. TCP 2-way vs 3-way handshake
+2-way handshake — Client sends SYN, server sends SYN-ACK, and communication starts. This is unreliable because the server doesn’t know if the client actually received the response.
+
+3-way handshake (used by TCP) — SYN → SYN-ACK → ACK. The final ACK confirms both sides can communicate, making the connection reliable.
+
+6. Presentation layer vs Session layer vs SMTP
+Presentation layer — Formats and transforms data for the application (e.g., encryption, compression, translating character encoding like UTF-8).
+
+Session layer — Manages starting, maintaining, and ending sessions between applications. Handles recovery from dropped connections.
+
+SMTP — Simple Mail Transfer Protocol. An Application-layer protocol used to send emails.
+
+7. Transport Layer
+Responsible for reliable delivery, segmentation, and error checking.
+
+TCP — Reliable, connection-oriented.
+
+UDP — Faster, connectionless, no guarantee of delivery.
+
+8. Where DNS cache is stored
+Browser cache (Chrome, Firefox, etc.)
+
+OS cache (Windows, macOS, Linux maintain their own DNS records)
+
+Router cache
+
+ISP’s DNS servers
+
+9. UTF character sets
+UTF-8 is a variable-length encoding that can use 1 to 4 bytes per character, allowing it to represent every Unicode character.
+
+10. How data is stored in different layers
+Physical/Data Link layers — Bits (0s and 1s) over cables or wireless signals.
+
+Network layer — Packets (binary data with IP headers).
+
+Transport layer — Segments (TCP) or datagrams (UDP).
+
+Application layer — Data in human-readable formats like HTML, JSON, or XML.
+
+11. How domain firewalls block content
+Firewalls can block websites or content by filtering:
+
+Domain names
+
+IP addresses
+
+Ports
+
+Protocols
+
+Packet content (Deep Packet Inspection).
+If you see “This message is dangerous,” the firewall or email filter flagged the content as suspicious based on these checks.
+
+12. CORS preflight
+When making certain cross-origin requests, the browser first sends an OPTIONS request to the target server to ask if it’s allowed. If the server responds with the right CORS headers, the actual request (GET, POST, etc.) is sent.

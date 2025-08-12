@@ -1,45 +1,39 @@
 
-class FootballPlayer {
-  describe() {
-    console.log("I am a football player");
+class JSONParser {
+  parse(str) {
+    return JSON.parse(str);
   }
-}
-class Winger extends FootballPlayer {
-  describe() {
-    console.log("I dribble.");
-  }
-}
-
-class Attacking_Midfeilder extends FootballPlayer {
-  describe() {
-    console.log("I make play.");
+  stringify(obj) {
+    return JSON.stringify(obj);
   }
 }
 
-class Striker extends FootballPlayer {
-  describe() {
-    console.log("I score goals.");
+class CSVParser {
+  parse(str) {
+    return str.split("\n").map(row => row.split(","));
+  }
+  stringify(arr) {
+    return arr.map(row => row.join(",")).join("\n");
   }
 }
 
-class FootballPlayerFactory {
-  static createPlayer(position) {
-    switch(position) {
-      case "Winger":
-        return new Winger();
-      case "Attacking_Midfeilder":
-        return new Attacking_Midfeilder();
-      case "Striker":
-        return new Striker();
+class ParserFactory {
+  static createParser(format) {
+    switch (format.toLowerCase()) {
+      case "json":
+        return new JSONParser();
+      case "csv":
+        return new CSVParser();
       default:
-        throw new Error("Maybe a cricketer: " , position);
+        throw new Error(`Unknown parser type: ${format}`);
     }
   }
 }
 
-const player1 = FootballPlayerFactory.createPlayer("Winger");
-const player3 = FootballPlayerFactory.createPlayer("Attacking_Midfeilder");
-const player2 = FootballPlayerFactory.createPlayer("Striker");
-player1.describe(); 
-player2.describe(); 
-player3.describe(); 
+const jsonParser = ParserFactory.createParser("json");
+console.log(jsonParser.parse('{"name":"Sameer"}')); 
+console.log(jsonParser.stringify({ name: "Sameer" }));
+const csvParser = ParserFactory.createParser("csv");
+console.log(csvParser.parse("a,b,c\n1,2,3"));
+console.log(csvParser.stringify([['a','b'], ['1','2']]));
+

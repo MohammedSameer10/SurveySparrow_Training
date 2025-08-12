@@ -5,11 +5,11 @@ const app = express();
 app.use(express.json()); 
 pool.connect()
   .then(client => {
-    console.log('✅ Connected to PostgreSQL successfully');
+    console.log('Connected to PostgreSQL successfully');
     client.release(); 
   })
   .catch(err => {
-    console.error('❌ Database connection error:', err.stack);
+    console.error('Database connection error:', err.stack);
   });
 app.post('/footballers', async (req, res) => {
   try {
@@ -29,7 +29,7 @@ app.get('/footballers', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM football ORDER BY id ASC');
     res.json(result.rows);
-  } catch (err) {
+  } catch (err) {l
     console.error(err.message);
     res.status(500).send('Server Error');
   }

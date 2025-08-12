@@ -1,12 +1,10 @@
-// server.js
 import express from "express";
 import rateLimit from "express-rate-limit";
 
 const app = express();
-
 const limiter = rateLimit({
-  windowMs: 1000, // 1 second window
-  max: 5,         // limit each IP to 5 requests per windowMs
+  windowMs: 1000, 
+  max: 5,        
   message: {
     error: "Too many requests, please slow down!",
   },

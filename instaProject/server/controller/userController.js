@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
-const { User } = require("../model");
-
+const { User, Post, Follower, Sequelize } = require("../model");
+const {Parser} = require('json2csv')
 
 const register = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -51,7 +51,7 @@ function generateTokenAndSetCookie(res, email) {
 res.cookie("jwt", token, {
   httpOnly: true,    
   secure: false,    
-  sameSite: "strict",
+  sameSite: "none",
   maxAge: 24 * 60 * 60 * 1000 
 });
 
@@ -124,8 +124,7 @@ const updateUser = asyncHandler(async (req, res) => {
     throw err;
   }
 
-
-  const { username, newEmail } = req.body;
+const { username, newEmail } = req.body || {};
 
   if (username) user.username = username;
   if (newEmail) user.email = newEmail;
@@ -148,5 +147,92 @@ const updateUser = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { login, register, deleteUserByEmail, updateUser };
+const searchUsers = asyncHandler(async (req, res) => {
+  const { searchTerm = "", page = 1, limit = 20 } = req.body; 
+  const userId = req.user.id;
+
+  const whereClause = {
+    id: { [Sequelize.Op.ne]: userId } 
+  };
+
+  if (searchTerm.trim() !== "") {
+    whereClause.username = { [Sequelize.Op.iLike]: `%${searchTerm.trim()}%` };
+  }
+
+  const users = await User.findAll({
+    where: whereClause,
+    attributes: ["id", "username", "email", "profileImage"],
+    order: [["username", "ASC"]],
+    offset: (page - 1) * limit,
+    limit: parseInt(limit)
+  });
+
+  const totalUsers = await User.count({ where: whereClause });
+
+  res.json({
+    page: parseInt(page),
+    total: totalUsers,
+    totalPages: Math.ceil(totalUsers / limit),
+    users
+  });
+});
+
+const exportUserCSV = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  const user = await User.findOne({
+    where: { id: userId },
+    attributes: ["username", "email", "password"]
+  });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  const followings = await Follower.findAll({
+    where: { followerId: userId },
+    include: [{ model: User, as: "FollowingUser", attributes: ["username", "email"] }],
+    raw: true,
+    nest: true
+  });
+
+  const followingUsers = followings.map(f => f.FollowingUser.username).join(", ");
+
+  const followers = await Follower.findAll({
+    where: { followingId: userId },
+    include: [{ model: User, as: "FollowerUser", attributes: ["username", "email"] }],
+    raw: true,
+    nest: true
+  });
+
+  const followerUsers = followers.map(f => f.FollowerUser.username).join(", ");
+
+  const posts = await Post.findAll({
+    where: { userId },
+    attributes: ["id"],
+    raw: true
+  });
+
+  const postIds = posts.map(p => p.id).join(", ");
+
+  const csvData = [
+    {
+      username: user.username,
+      email: user.email,
+      following: followingUsers,
+      followers: followerUsers,
+      posts: postIds
+    }
+  ];
+
+  const parser = new Parser();
+  const csv = parser.parse(csvData);
+
+  res.header("Content-Type", "text/csv");
+  res.attachment(`${user.username}_data.csv`);
+  res.send(csv);
+});
+
+module.exports = { login, register, deleteUserByEmail, updateUser, searchUsers, exportUserCSV };
 

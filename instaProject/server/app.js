@@ -8,14 +8,14 @@ const likeRouter = require('./routes/likeRoutes');
 const followRouter = require('./routes/followRoutes');
 const notificationRouter = require('./routes/notificationRoutes');
 const cron = require("node-cron");
+const cookieParser = require('cookie-parser')
 const { cleanupNotifications } = require("./controller/notificationController");
 
 const tokenAuthenticator = require('./middleware/tokenAuthenticator');
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser())
 app.use(errorHandler)
 
 app.get('/', (req, res) => {
@@ -28,7 +28,6 @@ app.use("/post", postRouter);
 app.use('/like',likeRouter);
 app.use('/follow',followRouter);
 app.use('/notification',notificationRouter);
-
 
 
 cron.schedule("0 0 * * *", () => {

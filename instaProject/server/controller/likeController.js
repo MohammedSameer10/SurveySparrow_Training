@@ -69,8 +69,8 @@ const getUserLikes = async (req, res) => {
       where: { userId },
       include: [{ model: Post, attributes: ["image"] }]
     });
-
-    res.json(likes);
+    const totalLikes = likes.length;
+    res.json({totalLikes,likes});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

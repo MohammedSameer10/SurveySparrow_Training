@@ -35,6 +35,7 @@ const cleanupNotifications = asyncHandler(async () => {
 
   await Notification.destroy({
     where: {
+      isRead: true,
       createdAt: {
         [Op.lt]: new Date(Date.now() - 24 * 60 * 60 * 1000)
       }

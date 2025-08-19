@@ -5,8 +5,7 @@ const { User } = require("../model");
 const tokenAuthenticator = async (req, res, next) => {
   try {
     const bearer = req.headers["authorization"];
-    const token = req.cookies?.jwt || (bearer && bearer.split(" ")[1]);
-
+    const token = req.cookies?.jwt ||  bearer?.split(" ")[1];
     if (!token) {
       const err = new Error("No token provided");
       err.statusCode = 401;

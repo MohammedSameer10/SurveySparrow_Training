@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const {redis} = require("../config/redisConnection");
 const bcrypt = require("bcryptjs");
 const { User, Post, Follower, Sequelize } = require("../model");
 const {Parser} = require('json2csv')
@@ -151,6 +152,14 @@ const searchUsers = asyncHandler(async (req, res) => {
   const { searchTerm = "", page = 1, limit = 20 } = req.body; 
   const userId = req.user.id;
 
+  const cacheKey = `search:${searchTerm}:${page}:${limit}:${userId}`;
+
+  const cached = await redis.get(cacheKey);
+  if (cached) {
+    console.log(cached , " from redis");
+    return res.json(JSON.parse(cached));
+  }
+
   const whereClause = {
     id: { [Sequelize.Op.ne]: userId } 
   };
@@ -168,13 +177,15 @@ const searchUsers = asyncHandler(async (req, res) => {
   });
 
   const totalUsers = await User.count({ where: whereClause });
-
-  res.json({
+    const response = {
     page: parseInt(page),
     total: totalUsers,
     totalPages: Math.ceil(totalUsers / limit),
     users
-  });
+  };
+  await redis.setex(cacheKey, 60, JSON.stringify(response));
+  res.json(response);
+  
 });
 
 const exportUserCSV = asyncHandler(async (req, res) => {

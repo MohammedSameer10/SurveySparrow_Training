@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const followerController = require("../controller/followController"); 
+const {addFollow, removeFollow, getFollowers, getFollowing} = require("../controller/followController"); 
+const {followLimiter} = require("../middleware/rateLimiter");
 
-router.post("/add", followerController.addFollow);
+router.post("/add",followLimiter, addFollow);
 
-router.delete("/remove", followerController.removeFollow);
+router.delete("/remove", removeFollow);
 
-router.get("/followers", followerController.getFollowers);
+router.get("/followers", getFollowers);
 
-router.get("/following", followerController.getFollowing);
+router.get("/following", getFollowing);
 
 module.exports = router;

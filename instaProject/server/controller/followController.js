@@ -1,31 +1,42 @@
 const { Follower, User, Notification } = require("../model");
+const {followQueue} = require('../config/redisConnection')
 const asyncHandler = require("express-async-handler");
 
 const addFollow = asyncHandler(async (req, res) => {
-  const followerId = req.user.id; 
+  // const followerId = req.user.id; 
+  // const { followingId } = req.body;
+
+  // if (followerId === followingId) {
+  //   return res.status(400).json({ message: "You cannot follow yourself" });
+  // }
+
+  // const existingFollow = await Follower.findOne({ where: { followerId, followingId } });
+  // if (existingFollow) {
+  //   return res.status(400).json({ message: "Already following this user" });
+  // }
+
+  // const follow = await Follower.create({ followerId, followingId });
+
+  // const followerUser = await User.findByPk(followerId, { attributes: ["username"] });
+  // if (followerUser) {
+  //   await Notification.create({
+  //     message: `${followerUser.username} started following you`,
+  //     targetUserId: followingId, 
+  //     senderUserId: followerId   
+  //   });
+  // }
+  // res.status(201).json({ message: "Followed successfully", follow });
+
+   const followerId = req.user.id;
   const { followingId } = req.body;
 
   if (followerId === followingId) {
     return res.status(400).json({ message: "You cannot follow yourself" });
   }
 
-  const existingFollow = await Follower.findOne({ where: { followerId, followingId } });
-  if (existingFollow) {
-    return res.status(400).json({ message: "Already following this user" });
-  }
+  await followQueue.add("addFollow", { followerId, followingId });
 
-  const follow = await Follower.create({ followerId, followingId });
-
-  const followerUser = await User.findByPk(followerId, { attributes: ["username"] });
-  if (followerUser) {
-    await Notification.create({
-      message: `${followerUser.username} started following you`,
-      targetUserId: followingId, 
-      senderUserId: followerId   
-    });
-  }
-
-  res.status(201).json({ message: "Followed successfully", follow });
+  res.status(202).json({ message: "Follow request queued" });
 });
 
 

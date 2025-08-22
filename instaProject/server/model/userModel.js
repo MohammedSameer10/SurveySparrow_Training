@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true
     },
+    bio:{
+       type: DataTypes.STRING,
+       allowNull: true,
+       unique: false
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false

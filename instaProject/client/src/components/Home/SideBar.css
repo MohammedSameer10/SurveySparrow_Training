@@ -1,0 +1,99 @@
+/* Layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: #2f2266;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* User Section */
+.user-section {
+  background-color: #9b6fdc;
+  padding: 20px;
+  text-align: center;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: white;
+  color: #9b6fdc;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.username {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.bio {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* Menu */
+.menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  background: none;
+  border: none;
+  color: white;
+  padding: 15px 20px;
+  text-align: left;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.menu-item:hover {
+  background: #4a378c;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+}
+
+
+.menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.logout-container {
+  margin-top: auto;
+}
+
+.menu-item .icon {
+  margin-right: 10px;
+  vertical-align: middle;
+  display: inline-flex;
+}
+

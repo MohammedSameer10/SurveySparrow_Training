@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { User, Lock } from 'lucide-react'; 
 import { useNavigate } from 'react-router-dom';
-import './Register.css';
-import registerPageImage from '../assets/loginPageImage.avif';
-import Loader from '../components/Login/Loader';
+import '../styles/Register.css';
+import registerPageImage from '../../../assets/loginPageImage.avif';
+import Loader from '../../../components/Login/Loader';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -61,7 +61,7 @@ const Register = () => {
         setShowLoader(true);
         setTimeout(() => {
           setShowLoader(false);
-          navigate('/login');
+          navigate('/');
         }, 2000);
       }
     } catch (error) {

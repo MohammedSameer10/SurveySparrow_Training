@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { User, Lock } from 'lucide-react'; 
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
-import loginPageImage from '../assets/loginPageImage.avif';
-import GoogleSignInButton from '../components/Login/GoogleSignInbutton';
-import Loader from '../components/Login/Loader';
+import '../styles/Login.css';
+import loginPageImage from '../../../assets/loginPageImage.avif';
+import GoogleSignInButton from '../../../components/Login/GoogleSignInbutton';
+import Loader from '../../../components/Login/Loader';
 
 const Login = () => {
   const [email, setEmail] = useState('');

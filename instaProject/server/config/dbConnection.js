@@ -7,8 +7,16 @@ const sequelize = new Sequelize(
     {
         host: "localhost",
         dialect: "postgres",
-        logging: false 
-    }
+        logging: true,
+        benchmark: true,
+         pool: {
+            max: 20,       
+            min: 5,         
+            acquire: 30000,  
+            idle: 10000      
+        }
+    },
+    
 );
 
 sequelize.authenticate()

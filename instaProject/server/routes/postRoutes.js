@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { createPost, updatePost, deletePost, getFeeds, searchPosts, searchMyPost} = require("../controller/postController");
-const upload = require('../middleware/upload')
+const upload = require('../middleware/uploadDiskStorage')
 // const multer = require("multer");
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage });

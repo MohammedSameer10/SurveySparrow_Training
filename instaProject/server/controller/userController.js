@@ -2,12 +2,14 @@ const asyncHandler = require("express-async-handler");
 const {redis} = require("../config/redisConnection");
 const bcrypt = require("bcryptjs");
 const { User, Post, Follower, Sequelize } = require("../model");
-const {Parser} = require('json2csv')
+const {Parser} = require('json2csv');
+const path = require('path')
+const jwt = require("jsonwebtoken");
+
 
 const register = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
-
-
+  
   if (!username || !email || !password) {
     res.status(400);
     throw new Error("Username, email, and password are required");
@@ -32,7 +34,7 @@ const register = asyncHandler(async (req, res) => {
     username,
     email,
     password: hashedPassword,
-    profileImage: req.file ? req.file.buffer : null
+    profileImage: req.file?.buffer || null
   });
 
   res.status(201).json({
@@ -42,10 +44,9 @@ const register = asyncHandler(async (req, res) => {
 });
 
 
-const jwt = require("jsonwebtoken");
 
-function generateTokenAndSetCookie(res, email) {
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+function generateTokenAndSetCookie(res, email, id , username) {
+  const token = jwt.sign({ email, id, username }, process.env.JWT_SECRET, {
     expiresIn: "1d", 
   });
 
@@ -71,17 +72,19 @@ const login = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ where: { email } });
   if (!user) {
+    console.log("No User Found")
     res.status(401);
-    throw new Error("Invalid email or password");
+    throw new Error("email not found in db");
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
+    // const isMatch = password === user.password;;
   if (!isMatch) {
     res.status(401);
-    throw new Error("Invalid email or password");
+    throw new Error("Invalid password");
   }
 
-  const token = generateTokenAndSetCookie(res, email);
+  const token = generateTokenAndSetCookie(res, email, user.id, user.username);
 
   res.status(200).json({
     message: "Login successful",
@@ -115,7 +118,6 @@ const deleteUserByEmail = asyncHandler(async (req, res) => {
   });
 });
 const updateUser = asyncHandler(async (req, res) => {
-
   const { email } = req.user;
 
   const user = await User.findOne({ where: { email } });
@@ -125,13 +127,13 @@ const updateUser = asyncHandler(async (req, res) => {
     throw err;
   }
 
-const { username, newEmail } = req.body || {};
+  const { username, newEmail } = req.body || {};
 
   if (username) user.username = username;
   if (newEmail) user.email = newEmail;
 
   if (req.file) {
-    user.profileImage = req.file.buffer;
+    user.profileImage = `/uploads/${req.file.filename}`;
   }
 
   await user.save();
@@ -143,49 +145,100 @@ const { username, newEmail } = req.body || {};
       id: user.id,
       username: user.username,
       email: user.email,
-      profileImage: user.profileImage ? "Uploaded" : "Not set"
-    }
+      profileImage: user.profileImage || "Not set",
+    },
   });
 });
 
+module.exports = { updateUser };
+
+
 const searchUsers = asyncHandler(async (req, res) => {
-  const { searchTerm = "", page = 1, limit = 20 } = req.body; 
+  const { searchTerm = "", cursor, limit = 20, page=1 } = req.body;
   const userId = req.user.id;
 
-  const cacheKey = `search:${searchTerm}:${page}:${limit}:${userId}`;
-
-  const cached = await redis.get(cacheKey);
-  if (cached) {
-    console.log(cached , " from redis");
-    return res.json(JSON.parse(cached));
-  }
-
-  const whereClause = {
-    id: { [Sequelize.Op.ne]: userId } 
-  };
+  const whereClause = { id: { [Sequelize.Op.ne]: userId } };
 
   if (searchTerm.trim() !== "") {
     whereClause.username = { [Sequelize.Op.iLike]: `%${searchTerm.trim()}%` };
   }
 
-  const users = await User.findAll({
+  const { rows: users, count: totalUsers } = await User.findAndCountAll({
     where: whereClause,
-    attributes: ["id", "username", "email", "profileImage"],
+    attributes: ["id", "username", "email"],
     order: [["username", "ASC"]],
-    offset: (page - 1) * limit,
-    limit: parseInt(limit)
+    limit: parseInt(limit),
+    offset:(parseInt(page) - 1) * parseInt(limit),
+    raw: true
   });
 
-  const totalUsers = await User.count({ where: whereClause });
-    const response = {
+  res.json({
     page: parseInt(page),
+    limit: parseInt(limit),
     total: totalUsers,
     totalPages: Math.ceil(totalUsers / limit),
-    users
-  };
-  await redis.setex(cacheKey, 60, JSON.stringify(response));
-  res.json(response);
-  
+    users,
+  });
+});
+
+const searchUsersSuffix = asyncHandler(async (req, res) => {
+  const { searchTerm = "", cursor, direction = "next", limit = 20 } = req.body;
+  const userId = req.user.id;
+
+  const whereClause = { id: { [Sequelize.Op.ne]: userId } };
+
+  if (searchTerm.trim() !== "") {
+    whereClause.username = { [Sequelize.Op.iLike]: `${searchTerm.trim()}%` };
+  }
+
+  if (cursor) {
+    if (direction === "next") {
+      whereClause.username = { ...(whereClause.username || {}), [Sequelize.Op.gt]: cursor };
+    } else if (direction === "prev") {
+      whereClause.username = { ...(whereClause.username || {}), [Sequelize.Op.lt]: cursor };
+    }
+  }
+
+  const users = await User.findAll({
+    where: whereClause,
+    attributes: ["id", "username", "email"],
+    order: [["username", direction === "prev" ? "DESC" : "ASC"]],
+    limit: parseInt(limit),
+    raw: true
+  });
+
+  if (direction === "prev") users.reverse();
+
+  res.json({
+    limit: parseInt(limit),
+    prevCursor: users.length ? users[0].username : null,
+    nextCursor: users.length ? users[users.length - 1].username : null,
+    users,
+  });
+});
+
+
+const getUserById = asyncHandler(async (req, res) => {
+  const { id } = req.params; 
+  const cacheKey = `user:${id}`;
+
+  const cached = await redis.get(cacheKey);
+  if (cached) {
+    console.log("Cache hit for user:", id);
+    return res.json(JSON.parse(cached));
+  }
+
+  const user = await User.findByPk(id, {
+    attributes: ["id", "username", "email", "profileImage"]
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  await redis.setex(cacheKey, 60, JSON.stringify(user));
+
+  res.json(user);
 });
 
 const exportUserCSV = asyncHandler(async (req, res) => {
@@ -193,7 +246,7 @@ const exportUserCSV = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({
     where: { id: userId },
-    attributes: ["username", "email", "password"]
+    attributes: ["username", "email"]
   });
 
   if (!user) {
@@ -245,5 +298,5 @@ const exportUserCSV = asyncHandler(async (req, res) => {
   res.send(csv);
 });
 
-module.exports = { login, register, deleteUserByEmail, updateUser, searchUsers, exportUserCSV };
+module.exports = { login, register, deleteUserByEmail, updateUser, searchUsers, exportUserCSV, getUserById, searchUsersSuffix };
 

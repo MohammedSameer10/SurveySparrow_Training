@@ -11,7 +11,7 @@ const addLike = asyncHandler(async (req, res) => {
 
   const existingLike = await Like.findOne({ where: { userId: req.user.id, postId } });
   if (existingLike) {
-    return res.status(400).json({ message: "Already liked" });
+    return res.status(200).json({ message: "Already liked" });
   }
 
   const like = await Like.create({

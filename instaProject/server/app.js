@@ -8,6 +8,7 @@ const likeRouter = require('./routes/likeRoutes');
 const followRouter = require('./routes/followRoutes');
 const notificationRouter = require('./routes/notificationRoutes');
 const cron = require("node-cron");
+const path = require("path");
 const cookieParser = require('cookie-parser')
 const { cleanupNotifications } = require("./controller/notificationController");
 
@@ -21,6 +22,8 @@ app.use(errorHandler)
 app.get('/', (req, res) => {
     res.status(200).json({ code: 1, msg: "Hi Sameer" });
 });
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/users", userRouter);
 app.use(tokenAuthenticator);

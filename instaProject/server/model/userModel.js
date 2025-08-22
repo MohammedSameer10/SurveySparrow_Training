@@ -27,12 +27,12 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.associate = models => {
-    User.hasMany(models.Post, { foreignKey: "userId" });
-    User.hasMany(models.Like, { foreignKey: "userId" });
-    User.hasMany(models.Follower, { foreignKey: "followerId" });
-    User.hasMany(models.Follower, { foreignKey: "followingId" });
-    User.hasMany(models.Notification, { foreignKey: "targetUserId", as: "ReceivedNotifications" });
-    User.hasMany(models.Notification, { foreignKey: "senderUserId", as: "SentNotifications" });
+    User.hasMany(models.Post, { foreignKey: "userId", onDelete: "CASCADE"  });
+    User.hasMany(models.Like, { foreignKey: "userId", onDelete: "CASCADE"  });
+    User.hasMany(models.Follower, { foreignKey: "followerId" ,onDelete: "CASCADE" });
+    User.hasMany(models.Follower, { foreignKey: "followingId" , onDelete: "CASCADE" });
+    User.hasMany(models.Notification, { foreignKey: "targetUserId", as: "ReceivedNotifications" ,onDelete: "CASCADE" });
+    User.hasMany(models.Notification, { foreignKey: "senderUserId", as: "SentNotifications", onDelete: "CASCADE"  });
 
   };
 

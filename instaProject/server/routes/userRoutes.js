@@ -1,6 +1,6 @@
 const express = require("express");
-const { login, register, deleteUserByEmail, updateUser, searchUsers, exportUserCSV } = require("../controller/userController");
-const upload = require("../middleware/upload"); 
+const { login, register, deleteUserByEmail, updateUser, searchUsers, exportUserCSV, getUserById, searchUsersSuffix } = require("../controller/userController");
+const upload = require("../middleware/uploadDiskStorage"); 
 const tokenAuthenticator = require('../middleware/tokenAuthenticator')
 const {searchLimiter} = require("../middleware/rateLimiter");
 const userRouter = express.Router();
@@ -14,6 +14,10 @@ userRouter.put("/update",tokenAuthenticator, upload.single("profileImage"), upda
 userRouter.delete("/delete", deleteUserByEmail);
 
 userRouter.get("/search", tokenAuthenticator, searchLimiter, searchUsers);
+
+userRouter.get("/searchSuffix", tokenAuthenticator, searchLimiter, searchUsersSuffix);
+
+userRouter.get("/searchById/:id", tokenAuthenticator, searchLimiter, getUserById);
 
 userRouter.get("/getuserData",tokenAuthenticator, exportUserCSV);
 

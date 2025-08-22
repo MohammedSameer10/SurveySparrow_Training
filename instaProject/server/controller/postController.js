@@ -1,17 +1,27 @@
 const { Post, Follower , User, Sequelize} = require("../model");
 const asyncHandler = require("express-async-handler");
 const createPost = asyncHandler(async (req, res) => {
-  const { caption } = req.body;
-  if (!req.file) return res.status(400).json({ message: "Image is required" });
+  const caption = req.body.caption?.trim() || null;
+
+  if (!caption && !req.file) {
+    return res.status(400).json({ message: "Either caption or image is required" });
+  }
 
   const newPost = await Post.create({
     caption,
-    image: req.file.buffer,
-    userId: req.user.id
+    imagePath: req.file ? `/uploads/${req.file.filename}` : null, 
+    userId: req.user.id,
   });
 
-  res.status(201).json({ message: "Post created", caption: newPost.caption , id : newPost.id });
+  res.status(201).json({
+    message: "Post created",
+    id: newPost.id,
+    caption: newPost.caption,
+    image: newPost.imagePath,
+  });
 });
+
+
 
 const updatePost = asyncHandler(async (req, res) => {
   const { id } = req.params;

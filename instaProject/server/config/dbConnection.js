@@ -7,7 +7,7 @@ const sequelize = new Sequelize(
     {
         host: "localhost",
         dialect: "postgres",
-        logging: true,
+        logging: false,
         benchmark: true,
          pool: {
             max: 20,       

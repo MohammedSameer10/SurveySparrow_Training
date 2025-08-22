@@ -9,13 +9,17 @@ const followRouter = require('./routes/followRoutes');
 const notificationRouter = require('./routes/notificationRoutes');
 const cron = require("node-cron");
 const path = require("path");
+const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const { cleanupNotifications } = require("./controller/notificationController");
-
 const tokenAuthenticator = require('./middleware/tokenAuthenticator');
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:5173',   
+  credentials: true
+}));
 app.use(cookieParser())
 app.use(errorHandler)
 

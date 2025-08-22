@@ -61,39 +61,45 @@ res.cookie("jwt", token, {
   return token;
 }
 
-
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, login_type } = req.body;
 
-  if (!email || !password) {
+  if (!email || (!password && login_type !== "oauth")) {
     res.status(400);
-    throw new Error("Email and password are required");
+    throw new Error("Email and password are required (except for oauth login)");
   }
 
   const user = await User.findOne({ where: { email } });
   if (!user) {
-    console.log("No User Found")
+    console.log("No User Found");
     res.status(401);
     throw new Error("email not found in db");
   }
 
+  if (login_type === "oauth") {
+    console.log("OAuth login for:", email);
+
+    const token = generateTokenAndSetCookie(res, email, user.id, user.username);
+    return res.status(200).json({
+      message: "OAuth login successful",
+      token,
+      user: { id: user.id, username: user.username, email: user.email }
+    });
+  }
+
   const isMatch = await bcrypt.compare(password, user.password);
-    // const isMatch = password === user.password;;
   if (!isMatch) {
     res.status(401);
     throw new Error("Invalid password");
   }
 
   const token = generateTokenAndSetCookie(res, email, user.id, user.username);
-
   res.status(200).json({
     message: "Login successful",
-    token, 
+    token,
     user: { id: user.id, username: user.username, email: user.email }
   });
 });
-
-
 
 const deleteUserByEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;

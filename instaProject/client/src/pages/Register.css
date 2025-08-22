@@ -1,0 +1,129 @@
+.RegisterFullPage {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #7f00ff, #e100ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter','sans-serif';
+}
+
+.RegisterBody {
+    display: flex;           
+    height: 500px;
+    width: 750px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.RegisterLeft {
+    height: 100%;
+    width: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.RegisterContent {
+    background-color: white;
+    height: 75%;
+    width: 90%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.RegisterContent h1 {
+  font-size: 1.5rem;
+}
+
+.RegisterUserInp {
+    display: flex;              
+    align-items: center;       
+    height: 12%;
+    background-color: #f4f1fe;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    width: 80%;                 
+    gap: 8px;                   
+}
+
+.RegisterUserInp span {
+    display: flex;              
+    align-items: center;
+    justify-content: center;
+}
+
+.RegisterUserInp input {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    width: 100%;
+    font-size: 14px;
+}
+
+.RegisterUserInp:hover {
+    border: 1px solid blue;
+}
+
+.error-border {
+    border: 1px solid red;
+}
+
+.register-error-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #f44336; /* red */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-weight: bold;
+  z-index: 1000;
+  animation: fadeInOut 1.5s ease-in-out;
+  width: 400px;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.RegisterContent button {
+     height: 10%;
+     padding: 5px;
+     border-radius: 5px;
+     border: none;
+     background-color: rgb(134, 113, 243);
+     color: white;
+     font-family: 'Inter';
+     width: 30%;
+}
+
+.RegisterRight {
+    height: 100%;
+    width: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.RegisterRight img {
+    height: 250px;
+}
+
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: -8px;
+  margin-bottom: 8px;
+  width: 80%;
+}

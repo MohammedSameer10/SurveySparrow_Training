@@ -1,0 +1,85 @@
+/* PostCard.css */
+.post-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.post-username {
+  font-weight: bold;
+}
+
+.post-content {
+  margin: 10px 0;
+}
+
+.post-image {
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+}
+
+button:hover {
+  color: #000;
+}
+
+.post-feedback {
+  margin-top: 8px;
+  padding: 5px 10px;
+  background: #fffae6;
+  border: 1px solid #ffd700;
+  border-radius: 6px;
+  color: #333;
+  font-size: 0.9rem;
+  text-align: center;
+  animation: fadeInOut 1.5s forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-5px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-5px); }
+}
+
+button.liked {
+  color: red;
+  font-weight: bold;
+  transform: scale(1.2);
+  transition: transform 0.2s;
+}
+

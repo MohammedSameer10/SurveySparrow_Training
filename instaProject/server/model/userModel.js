@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
     profileImage: {
       type: DataTypes.BLOB('long'),
       allowNull: true
+    },
+    image:{
+      type: DataTypes.STRING,
+      allowNull:true
     }
   });
 

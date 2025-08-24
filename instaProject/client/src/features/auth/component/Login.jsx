@@ -1,70 +1,57 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { User, Lock } from 'lucide-react'; 
-import { useNavigate } from 'react-router-dom';
-import '../styles/Login.css';
-import loginPageImage from '../../../assets/loginPageImage.avif';
-import GoogleSignInButton from '../../../components/Login/GoogleSignInbutton';
-import Loader from '../../../components/Login/Loader';
+import React, { useState } from "react";
+import { User, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import "../styles/Login.css";
+import loginPageImage from "../../../assets/loginPageImage.avif";
+import GoogleSignInButton from "../../../components/Login/GoogleSignInbutton";
+import Loader from "../../../components/Login/Loader";
+import { loginUser } from "../../../features/auth/services/authService"; 
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showLoader, setShowLoader] = useState(false);
-  const [emailError,setEmailError] = useState(false);
-  const [passwordError,setPasswordError] = useState(false);
-  const [showError,setShowError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (login_type = null,em) => {
-      setEmailError(false);
-      setPasswordError(false);
-      console.log(`loginType:${login_type} email:${em}`);
-     if(!em){
-         setEmailError(true);
-         return;
-        }
-      if(login_type!=="oauth" && !password){
-          setPasswordError(true);
-           return;
-        }
-      try {
-        const res = await axios.post('http://localhost:8080/users/login', {
-        email:em,
-        password,
-        login_type,
-      });
-         if(res.status===200){
-             setShowLoader(true);
-             setTimeout(
-              ()=>{
-                 setShowLoader(false);
-                navigate('/home');
-              },
-              2000
-             );
-         }  
-        console.log(res);
-      } catch (error) {
-        console.error('Login failed:', error);
-        setShowLoader(false);
-        setShowError(true);
-        setTimeout(
-          ()=>{
-              setShowError(false);
-          },
-          2000
-        )
+  const handleLogin = async (login_type = null, em) => {
+    setEmailError(false);
+    setPasswordError(false);
+
+    if (!em) {
+      setEmailError(true);
+      return;
+    }
+    if (login_type !== "oauth" && !password) {
+      setPasswordError(true);
+      return;
+    }
+
+    try {
+      const res = await loginUser({ email: em, password, login_type }); // ✅ use service
+
+      if (res.status === 200) {
+        setShowLoader(true);
+        setTimeout(() => {
+          setShowLoader(false);
+          navigate("/home");
+        }, 2000);
       }
+    } catch (error) {
+      console.error("Login failed:", error);
+      setShowLoader(false);
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 2000);
+    }
   };
 
   return (
     <>
-    {showError && (
-         <div className="login-error-popup">
-         Invalid credentials
-        </div>
-    )}
+      {showError && <div className="login-error-popup">Invalid credentials</div>}
       {showLoader && <Loader />}
       {!showLoader && (
         <div className="LoginFullPage">
@@ -73,32 +60,35 @@ const Login = () => {
               <div className="LoginContent">
                 <h1>Login</h1>
                 <p>Welcome to PlaceMate</p>
-                <div className={`LoginUserInp ${emailError?'error-border':''}`}>
-                  <span><User /></span>
+                <div className={`LoginUserInp ${emailError ? "error-border" : ""}`}>
+                  <span>
+                    <User />
+                  </span>
                   <input
                     type="text"
                     placeholder="email"
                     value={email}
-                    onChange={(e) =>{ 
+                    onChange={(e) => {
                       setEmail(e.target.value);
                       setEmailError(false);
-                    }
-                    }
+                    }}
                   />
                 </div>
-               <div className={`LoginUserInp ${passwordError?'error-border':''}`}>
-                  <span><Lock /></span>
+                <div className={`LoginUserInp ${passwordError ? "error-border" : ""}`}>
+                  <span>
+                    <Lock />
+                  </span>
                   <input
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => {
-                      setPassword(e.target.value)
+                      setPassword(e.target.value);
                       setPasswordError(false);
                     }}
                   />
                 </div>
-                <button onClick={() => handleLogin(null,email)}>Login</button>
+                <button onClick={() => handleLogin(null, email)}>Login</button>
                 <p>or</p>
                 <div className="googleSignIn">
                   <GoogleSignInButton setEmail={setEmail} handleLogin={handleLogin} />

@@ -1,4 +1,4 @@
-const { Post, Follower , User, Sequelize} = require("../model");
+const { Post, Follower , User, Like, Sequelize} = require("../model");
 const asyncHandler = require("express-async-handler");
 const createPost = asyncHandler(async (req, res) => {
   const caption = req.body.caption?.trim() || null;
@@ -47,39 +47,66 @@ const deletePost = asyncHandler(async (req, res) => {
   res.json({ message: "Post deleted" });
 });
 
-
 const getFeeds = asyncHandler(async (req, res) => {
   const page = parseInt(req.body?.page) || 1; 
-  const limit = 10; 
+  const limit = 20; 
   const offset = (page - 1) * limit;
 
   const currentUserId = req.user.id;  
 
+  // Get the users the current user is following
   const following = await Follower.findAll({
     where: { followerId: currentUserId },
     attributes: ["followingId"]
   });
 
   const followingIds = following.map(f => f.followingId);
+  followingIds.push(currentUserId); // include self posts
 
-  followingIds.push(currentUserId);
-
+  // Fetch posts including user info and likes
   const posts = await Post.findAll({
     where: { userId: followingIds },
+    include: [
+      {
+        model: User, 
+        attributes: ["id", "username", "image"]
+      },
+      {
+        model: Like, // include likes
+        attributes: ["id", "userId"] // we only need userId for like count & check
+      }
+    ],
     order: [["createdAt", "DESC"]],
-    limit: 100
+    limit
   });
 
   const shuffled = posts.sort(() => 0.5 - Math.random());
   const paginated = shuffled.slice(offset, offset + limit);
 
+  // Flatten posts and include likeCount
+  const flattened = paginated.map(post => ({
+    id: post.id,
+    caption: post.caption,
+    image: post.image,
+    imagePath: post.imagePath,
+    createdAt: post.createdAt,
+    updatedAt: post.updatedAt,
+    userId: post.userId,
+    username: post.User?.username || "Unknown",
+    profileImage: post.User?.image || null,
+    likeCount: post.Likes.length, // total likes
+    likedByCurrentUser: post.Likes.some(like => like.userId === currentUserId) // optional
+  }));
+
   res.status(200).json({
     page,
-    postLength: paginated.length,
-    posts: paginated,
+    postLength: flattened.length,
+    posts: flattened,
     hasMore: offset + limit < shuffled.length
   });
 });
+
+
 
 const searchPosts = asyncHandler(async (req, res) => {
   const {

@@ -10,6 +10,7 @@ import {
   Download,
   LogOut,
 } from "lucide-react";
+import axiosInstance from "../../AxiosInstance"; 
 import "./Sidebar.css";
 
 export default function Sidebar() {
@@ -17,23 +18,31 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/user") // Replace with your real API endpoint
-      .then((res) => res.json())
-      .then((data) => setUser(data))
-      .catch(() =>
+    console.log("Yes i am running");
+    const fetchUserData = async () => {
+      try {
+        const res = await axiosInstance.get("/users/getCurrentUser");
+        console.log(res.data)
+        setUser(res.data); 
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
         setUser({
           username: "username",
           bio: "bio.....",
           followers: 12,
           following: 34,
-        })
-      );
+          image: null,
+        });
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   const menuItems = [
     { name: "home", icon: <Home />, route: "/home" },
-    { name: "update profile", icon: <User />, route: "/update-profile" },
-    { name: "search profile", icon: <Search />, route: "/search-profile" },
+    { name: "update profile", icon: <User />, route: "/updateUser" },
+    { name: "search profile", icon: <Search />, route: "/searchProfile" },
     { name: "add post", icon: <PlusCircle />, route: "/add-post" },
     { name: "search post", icon: <Search />, route: "/search-post" },
     { name: "notification", icon: <Bell />, route: "/notification" },
@@ -47,7 +56,17 @@ export default function Sidebar() {
       <div className="sidebar">
         {/* User Section */}
         <div className="user-section">
-          <div className="avatar">⚡</div>
+          <div className="avatar">
+            {user?.image ? (
+              <img
+                src={`http://localhost:8080${user.image}`}
+                alt={user.username}
+                className="avatar-img"
+              />
+            ) : (
+              "⚡"
+            )}
+          </div>
           <h2 className="username">{user?.username}</h2>
           <p className="bio">{user?.bio}</p>
           <div className="stats">
@@ -82,11 +101,6 @@ export default function Sidebar() {
             </button>
           </div>
         </nav>
-      </div>
-
-      {/* Main content */}
-      <div className="main-content">
-        <h1>Main Content Area</h1>
       </div>
     </div>
   );

@@ -123,6 +123,7 @@ const deleteUserByEmail = asyncHandler(async (req, res) => {
     deletedEmail: email
   });
 });
+
 const updateUser = asyncHandler(async (req, res) => {
   const { email } = req.user;
 
@@ -133,13 +134,44 @@ const updateUser = asyncHandler(async (req, res) => {
     throw err;
   }
 
-  const { username, newEmail } = req.body || {};
+  const { username, newEmail, bio, password } = req.body || {};
 
-  if (username) user.username = username;
-  if (newEmail) user.email = newEmail;
+  // Update username
+  if (username && username !== user.username) {
+    const existingUser = await User.findOne({ where: { username } });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Username already taken",
+      });
+    }
+    user.username = username;
+  }
 
+  // Update bio
+  user.bio = bio || user.bio || "i was lightning before the Thunder";
+
+  // Update email
+  if (newEmail && newEmail !== user.email) {
+    const existingEmail = await User.findOne({ where: { email: newEmail } });
+    if (existingEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already in use",
+      });
+    }
+    user.email = newEmail;
+  }
+
+  // Update password
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+  }
+
+  // Update profile image
   if (req.file) {
-    user.profileImage = `/uploads/${req.file.filename}`;
+    user.image = `/uploads/${req.file.filename}`;
   }
 
   await user.save();
@@ -151,12 +183,10 @@ const updateUser = asyncHandler(async (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      profileImage: user.profileImage || "Not set",
+      image: user.image || "Not set",
     },
   });
 });
-
-module.exports = { updateUser };
 
 
 const searchUsers = asyncHandler(async (req, res) => {
@@ -171,7 +201,7 @@ const searchUsers = asyncHandler(async (req, res) => {
 
   const { rows: users, count: totalUsers } = await User.findAndCountAll({
     where: whereClause,
-    attributes: ["id", "username", "email"],
+    attributes: ["id", "username", "bio", "image"],
     order: [["username", "ASC"]],
     limit: parseInt(limit),
     offset:(parseInt(page) - 1) * parseInt(limit),
@@ -304,5 +334,40 @@ const exportUserCSV = asyncHandler(async (req, res) => {
   res.send(csv);
 });
 
-module.exports = { login, register, deleteUserByEmail, updateUser, searchUsers, exportUserCSV, getUserById, searchUsersSuffix };
+
+const getCurrentUser = asyncHandler(async (req, res) => {
+  const userId = req.user.id; 
+  const cacheKey = `user:${userId}`;
+
+  const cached = await redis.get(cacheKey);
+  if (cached) {
+    console.log("Cache hit for user:", userId);
+    return res.json(JSON.parse(cached));
+  }
+
+  const user = await User.findByPk(userId, {
+    attributes: ["id", "username", "email", "image", "bio"]
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const [followersCount, followingCount] = await Promise.all([
+    Follower.count({ where: { followingId: userId } }), 
+    Follower.count({ where: { followerId: userId } }) 
+  ]);
+
+  const userData = {
+    ...user.toJSON(),
+    followers: followersCount,
+    following: followingCount,
+  };
+
+  // await redis.setex(cacheKey, 5, JSON.stringify(userData));
+
+  res.json(userData);
+});
+
+module.exports = { login, register, deleteUserByEmail, updateUser, searchUsers, exportUserCSV, getUserById, searchUsersSuffix, getCurrentUser };
 

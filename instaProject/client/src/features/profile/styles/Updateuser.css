@@ -1,0 +1,63 @@
+.updateUserContainer {
+  padding: 3rem; /* slightly bigger padding */
+  background-color: white;
+  border-radius: 12px; /* slightly rounder corners */
+  max-width: 800px; /* bigger container */
+  margin: 4rem auto; /* centers vertically and horizontally */
+  color: #000;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* subtle shadow */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center content horizontally */
+}
+
+.updateUserContainer h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.updateUserForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  width: 100%; /* full width of container */
+}
+
+.formRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap; /* wraps fields on smaller screens */
+}
+
+.formRow label {
+  flex: 1;
+  font-weight: 500;
+  align-self: center;
+  min-width: 100px; /* prevent labels from being too small */
+}
+
+.formRow input {
+  flex: 2;
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 200px;
+}
+
+.submitBtn {
+  align-self: center;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #7f5af0;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submitBtn:hover {
+  background-color: #633dcf;
+}

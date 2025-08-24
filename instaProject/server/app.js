@@ -26,8 +26,7 @@ app.use(errorHandler)
 app.get('/', (req, res) => {
     res.status(200).json({ code: 1, msg: "Hi Sameer" });
 });
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "./middleware/uploads")));
 
 app.use("/users", userRouter);
 app.use(tokenAuthenticator);

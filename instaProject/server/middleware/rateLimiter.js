@@ -3,7 +3,7 @@ const { ipKeyGenerator } = require("express-rate-limit");
 
 const searchLimiter = rateLimit({
   windowMs: 60 * 1000, 
-  max: 5,      
+  max: 10,      
  keyGenerator: (req) => req.user?.id || ipKeyGenerator(req),       
   message: { error: "Too many requests, please try again later." }
 });

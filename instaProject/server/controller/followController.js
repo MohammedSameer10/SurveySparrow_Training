@@ -46,7 +46,7 @@ const removeFollow = asyncHandler(async (req, res) => {
 
   const deleted = await Follower.destroy({ where: { followerId, followingId } });
   if (!deleted) {
-    return res.status(404).json({ message: "Follow relation not found" });
+    return res.status(200).json({ message: "Already not following" });
   }
 
  

@@ -34,13 +34,16 @@ const PostCard = ({ post, onLike, onFollow }) => {
             {new Date(post.createdAt).toLocaleTimeString()}
           </span>
         </div>
-        <button
-          className="follow-btn"
-          onClick={handleFollow}
-          disabled={post.followed}
-        >
-          {post.followed ? "Followed" : "Follow"}
-        </button>
+      {!post.isOwnPost && (
+      <button
+    className="follow-btn"
+    onClick={handleFollow}
+    disabled={post.followed}
+      >
+    {post.followed ? "Followed" : "Follow"}
+  </button>
+)}
+
       </div>
 
       {/* Caption */}

@@ -1,3 +1,4 @@
+// src/layout/Sidebar.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,12 +19,12 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Yes i am running");
+    console.log("Fetching current user...");
     const fetchUserData = async () => {
       try {
         const res = await axiosInstance.get("/users/getCurrentUser");
-        console.log(res.data)
-        setUser(res.data); 
+        console.log("User data:", res.data);
+        setUser(res.data);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
         setUser({
@@ -35,7 +36,6 @@ export default function Sidebar() {
         });
       }
     };
-
     fetchUserData();
   }, []);
 
@@ -43,16 +43,15 @@ export default function Sidebar() {
     { name: "home", icon: <Home />, route: "/home" },
     { name: "update profile", icon: <User />, route: "/updateUser" },
     { name: "search profile", icon: <Search />, route: "/searchProfile" },
-    { name: "add post", icon: <PlusCircle />, route: "/add-post" },
-    { name: "search post", icon: <Search />, route: "/search-post" },
+    { name: "add post", icon: <PlusCircle />, route: "/addPost" },
+    // We'll handle "view post" separately below to include `state`
     { name: "notification", icon: <Bell />, route: "/notification" },
-    { name: "view likes", icon: <Heart />, route: "/view-likes" },
-    { name: "download csv", icon: <Download />, route: "/download-csv" },
+    { name: "view likes", icon: <Heart />, route: "/viewLike" },
+    { name: "download csv", icon: <Download />, route: "/downloadCsv" },
   ];
 
   return (
     <div className="app-container">
-      {/* Sidebar */}
       <div className="sidebar">
         {/* User Section */}
         <div className="user-section">
@@ -88,12 +87,20 @@ export default function Sidebar() {
             </button>
           ))}
 
-          {/* Logout at bottom */}
+          {/* Handle view post with user data */}
+          <button
+            className="menu-item"
+            onClick={() => {
+              navigate("/viewPost", { state: { user } });
+            }}
+          >
+            <span className="icon"><Search /></span>
+            view post
+          </button>
+
+          {/* Logout */}
           <div className="logout-container">
-            <button
-              className="menu-item logout"
-              onClick={() => navigate("/")}
-            >
+            <button className="menu-item logout" onClick={() => navigate("/")}>
               <span className="icon">
                 <LogOut />
               </span>

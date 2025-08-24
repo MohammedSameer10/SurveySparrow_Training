@@ -63,17 +63,50 @@ const removeLike = async (req, res) => {
 
 const getUserLikes = async (req, res) => {
   try {
-    const  userId  = req.params.id;
+    const userId = req.user.id;
 
     const likes = await Like.findAll({
       where: { userId },
-      include: [{ model: Post, attributes: ["image"] }]
+      include: [
+        {
+          model: Post,
+          attributes: ["id", "caption", "imagePath", "createdAt", "userId"],
+          include: [
+            {
+              model: User,
+              attributes: ["id", "username", "image"]
+            },
+            {
+              model: Like,
+              attributes: ["id"]
+            }
+          ]
+        }
+      ]
     });
-    const totalLikes = likes.length;
-    res.json({totalLikes,likes});
+
+    const formattedLikes = likes.map(like => {
+      const post = like.Post;
+      return {
+        postId: post.id,
+        caption: post.caption,
+        imagePath: post.imagePath,
+        createdAt: post.createdAt,
+        likeCount: post.Likes.length,
+        user: {
+          id: post.User.id,
+          username: post.User.username,
+          image: post.User.image
+        },
+        likedByCurrentUser: post.userId === parseInt(userId)
+      };
+    });
+
+    res.json({ totalLikes: formattedLikes.length, likes: formattedLikes });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 module.exports = { addLike, removeLike, getUserLikes };

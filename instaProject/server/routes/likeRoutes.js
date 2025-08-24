@@ -8,6 +8,6 @@ router.post("/add", addLike);
 
 router.delete("/remove", removeLike);
 
-router.get("/getUserLikes/:id", getUserLikes);
+router.get("/getUserLikes", getUserLikes);
 
 module.exports = router;

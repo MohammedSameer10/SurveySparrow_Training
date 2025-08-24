@@ -156,32 +156,33 @@ const searchPosts = asyncHandler(async (req, res) => {
 
   res.json({postLength:posts.length, posts });
 });
-
 const searchMyPost = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
   const { searchTerm = "", page = 1, limit = 20, sortOrder = "DESC" } = req.body;
-
+  const userId = req.user.id;
   const offset = (page - 1) * limit;
 
-  let whereClause = { userId };
-
-  if (searchTerm === "image") {
-    whereClause.image = { [Sequelize.Op.ne]: null };
-  } else if (searchTerm === "caption") {
-    whereClause.caption = { [Sequelize.Op.ne]: null };
-  }
-
-  let attributes = ["id", "createdAt"];
-  if (searchTerm === "image") attributes.push("image");
-  else if (searchTerm === "caption") attributes.push("caption");
-  else attributes.push("caption", "image");
+  const whereClause = {
+    userId,
+    caption: { [Sequelize.Op.like]: `%${searchTerm}%` },
+  };
 
   const posts = await Post.findAll({
     where: whereClause,
-    attributes,
+    attributes: {
+      include: [
+        [
+          Sequelize.literal(`(
+            SELECT COUNT(*) 
+            FROM "Likes" AS l
+            WHERE l."postId" = "Post"."id"
+          )`),
+          "likeCount",
+        ],
+      ],
+    },
     order: [["createdAt", sortOrder]],
     offset: parseInt(offset),
-    limit: parseInt(limit)
+    limit: parseInt(limit),
   });
 
   const totalPosts = await Post.count({ where: whereClause });
@@ -190,8 +191,50 @@ const searchMyPost = asyncHandler(async (req, res) => {
     page: parseInt(page),
     total: totalPosts,
     totalPages: Math.ceil(totalPosts / limit),
+    posts,
+  });
+});
+
+
+
+
+
+const getMyPosts = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { page = 1, limit = 20 } = req.query;
+
+  const offset = (page - 1) * limit;
+
+  const posts = await Post.findAll({
+    where: { userId },
+    order: [["createdAt", "DESC"]],
+    limit: parseInt(limit),
+    offset: parseInt(offset),
+    attributes: {
+      include: [
+        [
+          Sequelize.literal(`(
+            SELECT COUNT(*) 
+            FROM "Likes" AS l
+            WHERE l."postId" = "Post"."id"
+          )`),
+          "likeCount"
+        ]
+      ]
+    }
+  });
+
+  const totalPosts = await Post.count({ where: { userId } });
+
+  res.json({
+    page: parseInt(page),
+    limit: parseInt(limit),
+    total: totalPosts,
+    totalPages: Math.ceil(totalPosts / limit),
     posts
   });
 });
 
-module.exports = {createPost, deletePost, updatePost, getFeeds, searchPosts, searchMyPost}
+
+
+module.exports = {createPost, deletePost, updatePost, getFeeds, searchPosts, searchMyPost , getMyPosts}

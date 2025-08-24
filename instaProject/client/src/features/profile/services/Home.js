@@ -20,6 +20,7 @@ export const likePost = async (postId) => {
     const res = await axios.post(`/like/add`,{
       postId
     });
+    console.log(res.data);
     return res.data;
   } catch (error) {
     console.error("Error liking post:", error);
@@ -34,22 +35,21 @@ export const followUser = async (followingId) => {
     const res = await axios.post(`/follow/add`,{
       followingId
     });
+    console.log(res.data)
     return res.data;
   } catch (error) {
     console.error("Error following user:", error);
     return null;
   }
 };
-
 export const unFollowUser = async (followingId) => {
   try {
-    console.log(followingId, "inside remove follow api call");
-    const res = await axios.post(`/follow/remove`, {
-      followingId,
+    await axios.delete("http://localhost:8080/follow/remove", {
+      data: { followingId },
+      withCredentials: true
     });
-    return res.data;
-  } catch (error) {
-    console.error("Error unfollowing user:", error);
-    return null;
+    console.log("Unfollow success");
+  } catch (err) {
+    console.error("Error unfollowing user:", err);
   }
 };

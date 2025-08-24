@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { searchUsers } from "../services/Profile";
+import { followUser, unFollowUser } from "../services/Home"; // <-- use Home.js services
 import axiosInstance from "../../../AxiosInstance";
 import "../styles/SearchProfile.css";
 
@@ -22,20 +23,30 @@ export default function SearchProfile() {
     }
   };
 
-  const handleFollow = async (userId, isFollowing) => {
+  const handleFollow = async (userId) => {
     try {
-      if (isFollowing) {
-        await axiosInstance.post("/follow/remove", { followingId: userId });
-      } else {
-        await axiosInstance.post("/follow/add", { followingId: userId });
-      }
+      await followUser(userId); // service call
       setResults((prev) =>
         prev.map((u) =>
-          u.id === userId ? { ...u, isFollowing: !isFollowing } : u
+          u.id === userId ? { ...u, isFollowing: true } : u
         )
       );
     } catch (err) {
-      console.error("Error follow/unfollow:", err);
+      console.error("Error following user:", err);
+    }
+  };
+
+  const handleUnfollow = async (userId) => {
+    try {
+        console.log("handle follow called")
+      await unFollowUser(userId); // service call
+      setResults((prev) =>
+        prev.map((u) =>
+          u.id === userId ? { ...u, isFollowing: false } : u
+        )
+      );
+    } catch (err) {
+      console.error("Error unfollowing user:", err);
     }
   };
 
@@ -81,16 +92,21 @@ export default function SearchProfile() {
                 <p className="profile-username">{user.username}</p>
                 <p className="profile-bio">{user.bio || "No bio available"}</p>
               </div>
-              <div className="profile-action">
-                <button
-                  className={`follow-btn ${
-                    user.isFollowing ? "unfollow" : "follow"
-                  }`}
-                  onClick={() => handleFollow(user.id, user.isFollowing)}
-                >
-                  {user.isFollowing ? "Unfollow" : "Follow"}
-                </button>
-              </div>
+           <div className="profile-action">
+  <button
+    className="follow-btn follow"
+    onClick={() => handleFollow(user.id)}
+  >
+    Follow
+  </button>
+  <button
+    className="follow-btn unfollow"
+    onClick={() => handleUnfollow(user.id)}
+  >
+    Unfollow
+  </button>
+</div>
+
             </div>
           ))
         )}

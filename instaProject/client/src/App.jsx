@@ -6,6 +6,14 @@ import Login from "./features/auth/component/Login";
 import Layout from "./layout/SidebarRoute";
 import UpdateUser from "./features/profile/component/UpdateUser";
 import SearchProfile from "./features/profile/component/SearchProfile";
+import AddPost from './features/post/components/AddPost';
+import ViewPost from './features/post/components/ViewPost';
+import ViewLike from './features/profile/component/ViewLikes';
+import Notification from './features/notification/component/Notification';
+import DownloadCsv from "./features/profile/component/DownloadCsv";
+
+
+
 
 function App() {
   return (
@@ -18,7 +26,11 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/updateUser" element={<UpdateUser />} />
             <Route path="/searchProfile" element={<SearchProfile />} />
-
+            <Route path="/addPost" element={<AddPost />} />
+            <Route path="/viewPost" element={<ViewPost />} />
+            <Route path="/ViewLike" element={<ViewLike />} />
+            <Route path="/notification" element={<Notification />} />
+            <Route path="/DownloadCsv" element={<DownloadCsv />} />
           </Route>
         </Routes>
       </Router>

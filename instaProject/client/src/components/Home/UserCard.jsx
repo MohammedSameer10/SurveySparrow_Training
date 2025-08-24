@@ -4,15 +4,17 @@ import "./UserCard.css";
 const UserCard = ({ user, onFollow }) => {
   return (
     <div className="user-card">
-      <div>
-        <h3>{user.username}</h3>
-        <p>{user.email}</p>
+      <div className="user-info">
+        <img
+          src={user.profilePic || "https://via.placeholder.com/40"}
+          alt={user.username}
+          className="user-avatar"
+        />
+        <span className="user-name">{user.username}</span>
       </div>
-      {onFollow && (
-        <button className="follow-btn" onClick={() => onFollow(user._id)}>
-          Follow
-        </button>
-      )}
+      <button className="follow-btn" onClick={() => onFollow(user._id)}>
+        Follow
+      </button>
     </div>
   );
 };

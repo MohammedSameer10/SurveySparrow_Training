@@ -1,0 +1,14 @@
+.viewlike-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.viewlike-loading,
+.viewlike-empty {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 50px;
+  color: #555;
+}

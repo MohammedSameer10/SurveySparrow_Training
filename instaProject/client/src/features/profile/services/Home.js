@@ -44,7 +44,7 @@ export const followUser = async (followingId) => {
 };
 export const unFollowUser = async (followingId) => {
   try {
-    await axios.delete("http://localhost:8080/follow/remove", {
+    await axios.delete("follow/remove", {
       data: { followingId },
       withCredentials: true
     });
@@ -52,4 +52,14 @@ export const unFollowUser = async (followingId) => {
   } catch (err) {
     console.error("Error unfollowing user:", err);
   }
+};
+
+export const getFollowers = async () => {
+  const res = await axios.get("/follow/followers");
+  return res.data;
+};
+
+export const getFollowing = async () => {
+  const res = await axios.get("/follow/following");
+  return res.data;
 };

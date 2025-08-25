@@ -11,7 +11,7 @@ import ViewPost from './features/post/components/ViewPost';
 import ViewLike from './features/profile/component/ViewLikes';
 import Notification from './features/notification/component/Notification';
 import DownloadCsv from "./features/profile/component/DownloadCsv";
-
+import FollowPage from "./features/profile/component/FollowPage";
 
 
 
@@ -31,6 +31,7 @@ function App() {
             <Route path="/ViewLike" element={<ViewLike />} />
             <Route path="/notification" element={<Notification />} />
             <Route path="/DownloadCsv" element={<DownloadCsv />} />
+            <Route path="/followPage" element={<FollowPage />} />
           </Route>
         </Routes>
       </Router>

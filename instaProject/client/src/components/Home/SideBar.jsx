@@ -1,4 +1,3 @@
-// src/layout/Sidebar.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -44,7 +43,6 @@ export default function Sidebar() {
     { name: "update profile", icon: <User />, route: "/updateUser" },
     { name: "search profile", icon: <Search />, route: "/searchProfile" },
     { name: "add post", icon: <PlusCircle />, route: "/addPost" },
-    // We'll handle "view post" separately below to include `state`
     { name: "notification", icon: <Bell />, route: "/notification" },
     { name: "view likes", icon: <Heart />, route: "/viewLike" },
     { name: "download csv", icon: <Download />, route: "/downloadCsv" },
@@ -69,8 +67,18 @@ export default function Sidebar() {
           <h2 className="username">{user?.username}</h2>
           <p className="bio">{user?.bio}</p>
           <div className="stats">
-            <span>{user?.followers} followers</span>
-            <span>{user?.following} following</span>
+            <span
+              className="stats-link"
+              onClick={() => navigate("/followPage", { state: { type: "followers" } })}
+            >
+              {user?.followers} followers
+            </span>
+            <span
+              className="stats-link"
+              onClick={() => navigate("/followPage", { state: { type: "following" } })}
+            >
+              {user?.following} following
+            </span>
           </div>
         </div>
 

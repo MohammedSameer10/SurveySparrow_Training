@@ -63,6 +63,16 @@
   color: #ddd;
 }
 
+.stats-link {
+  cursor: pointer;
+  color: #4da6ff;
+  font-weight: 500;
+}
+.stats-link:hover {
+  text-decoration: underline;
+  color: #80c1ff;
+}
+
 /* Menu */
 .menu {
   flex: 1;

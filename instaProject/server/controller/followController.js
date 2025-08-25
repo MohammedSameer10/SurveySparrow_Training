@@ -70,7 +70,7 @@ const getFollowers = asyncHandler(async (req, res) => {
   const followers = await Follower.findAll({
     where: { followingId: userId },
     include: [
-      { model: User, as: "FollowerUser", attributes: ["id", "username", "email"] }
+      { model: User, as: "FollowerUser", attributes: ["id", "username", "bio" , "image"] }
     ]
   });
 
@@ -84,7 +84,7 @@ const getFollowing = asyncHandler(async (req, res) => {
   const following = await Follower.findAll({
     where: { followerId: userId },
     include: [
-      { model: User, as: "FollowingUser", attributes: ["id", "username", "email"] }
+      { model: User, as: "FollowingUser", attributes: ["id", "username", "bio", "image" ] }
     ]
   });
 

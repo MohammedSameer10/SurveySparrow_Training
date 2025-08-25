@@ -337,13 +337,6 @@ const exportUserCSV = asyncHandler(async (req, res) => {
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   const userId = req.user.id; 
-  const cacheKey = `user:${userId}`;
-
-  const cached = await redis.get(cacheKey);
-  if (cached) {
-    console.log("Cache hit for user:", userId);
-    return res.json(JSON.parse(cached));
-  }
 
   const user = await User.findByPk(userId, {
     attributes: ["id", "username", "email", "image", "bio"]
@@ -364,7 +357,6 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     following: followingCount,
   };
 
-  // await redis.setex(cacheKey, 5, JSON.stringify(userData));
 
   res.json(userData);
 });

@@ -4,16 +4,18 @@ const upload = require("../middleware/uploadDiskStorage");
 const tokenAuthenticator = require('../middleware/tokenAuthenticator')
 const {searchLimiter} = require("../middleware/rateLimiter");
 const userRouter = express.Router();
+const validate = require('../middleware/validate');
+const { loginValidation, registerValidation, updateUserValidation, searchUsersValidation } = require('../middleware/validators');
 
-userRouter.post("/login", login);
+userRouter.post("/login", loginValidation, validate, login);
 
-userRouter.post("/register", upload.single("image"), register);
+userRouter.post("/register", upload.single("image"), registerValidation, validate, register);
 
-userRouter.put("/update",tokenAuthenticator, upload.single("image"), updateUser);
+userRouter.put("/update",tokenAuthenticator, upload.single("image"), updateUserValidation, validate, updateUser);
 
 userRouter.delete("/delete", deleteUserByEmail);
 
-userRouter.post("/search", tokenAuthenticator, searchLimiter, searchUsers);
+userRouter.post("/search", tokenAuthenticator, searchLimiter, searchUsersValidation, validate, searchUsers);
 
 userRouter.get("/searchSuffix", tokenAuthenticator, searchLimiter, searchUsersSuffix);
 

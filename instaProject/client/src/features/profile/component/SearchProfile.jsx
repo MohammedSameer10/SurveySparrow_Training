@@ -4,10 +4,13 @@ import { searchUsers } from "../services/Profile";
 import { followUser, unFollowUser } from "../services/Home"; // <-- use Home.js services
 import axiosInstance from "../../../AxiosInstance";
 import "../styles/SearchProfile.css";
+import { useUser } from "../../../store/UserContext.jsx";
 
 export default function SearchProfile() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [messages, setMessages] = useState({}); // { [userId]: message }
+  const { bumpFollowingCounts } = useUser();
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -25,28 +28,31 @@ export default function SearchProfile() {
 
   const handleFollow = async (userId) => {
     try {
-      await followUser(userId); // service call
-      setResults((prev) =>
-        prev.map((u) =>
-          u.id === userId ? { ...u, isFollowing: true } : u
-        )
-      );
+      // optimistic update
+      setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: true } : u)));
+      setMessages((prev) => ({ ...prev, [userId]: "Followed" }));
+      bumpFollowingCounts(0, 1);
+      await followUser(userId);
     } catch (err) {
       console.error("Error following user:", err);
+      // rollback on error
+      setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: false } : u)));
+      setMessages((prev) => ({ ...prev, [userId]: err?.message || "Failed to follow" }));
     }
   };
 
   const handleUnfollow = async (userId) => {
     try {
-        console.log("handle follow called")
-      await unFollowUser(userId); // service call
-      setResults((prev) =>
-        prev.map((u) =>
-          u.id === userId ? { ...u, isFollowing: false } : u
-        )
-      );
+      // optimistic update
+      setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: false } : u)));
+      setMessages((prev) => ({ ...prev, [userId]: "Unfollowed" }));
+      bumpFollowingCounts(0, -1);
+      await unFollowUser(userId);
     } catch (err) {
       console.error("Error unfollowing user:", err);
+      // rollback on error
+      setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: true } : u)));
+      setMessages((prev) => ({ ...prev, [userId]: err?.message || "Failed to unfollow" }));
     }
   };
 
@@ -106,6 +112,10 @@ export default function SearchProfile() {
     Unfollow
   </button>
 </div>
+
+              {messages[user.id] && (
+                <p className="inline-message">{messages[user.id]}</p>
+              )}
 
             </div>
           ))

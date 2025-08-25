@@ -35,3 +35,24 @@ export const searchMyPosts = async (searchTerm) => {
   });
   return res.data;
 };
+
+export const updateMyPost = async (postId, fields) => {
+  const form = new FormData();
+  Object.entries(fields).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      form.append(key, value);
+    }
+  });
+  const res = await axiosInstance.put(`/post/update/${postId}`, form, {
+    headers: { "Content-Type": "multipart/form-data" },
+    withCredentials: true
+  });
+  return res.data;
+};
+
+export const deleteMyPost = async (postId) => {
+  const res = await axiosInstance.delete(`/post/delete/${postId}`, {
+    withCredentials: true
+  });
+  return res.data;
+};

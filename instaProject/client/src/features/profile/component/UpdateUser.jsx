@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import { updateUser } from "../services/UpdateUser";
 import axiosInstance from "../../../AxiosInstance";
 import "../styles/UpdateUser.css";
+import { useUser } from "../../../store/UserContext.jsx";
 
 const UpdateUser = () => {
+  const { refreshUser } = useUser();
   const [formData, setFormData] = useState({
     username: "",
     bio: "",
@@ -59,6 +61,8 @@ const UpdateUser = () => {
       const res = await updateUser(submitData);
       alert("Profile updated successfully!");
       console.log("Updated user:", res);
+      // Immediately refresh global user so Sidebar and others update
+      await refreshUser();
     } catch (err) {
       console.error(err);
       alert(err.message || "Error updating profile");

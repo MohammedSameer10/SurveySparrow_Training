@@ -67,3 +67,45 @@
   font-weight: bold;
   color: #333;
 }
+
+.viewpost-item {
+  position: relative;
+}
+
+.owner-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.actions-row button,
+.edit-form button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  cursor: pointer;
+}
+
+.actions-row button:hover,
+.edit-form button:hover {
+  background: #f3f3f3;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.edit-form input[type="text"] {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+

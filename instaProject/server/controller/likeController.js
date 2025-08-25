@@ -64,9 +64,15 @@ const removeLike = async (req, res) => {
 const getUserLikes = async (req, res) => {
   try {
     const userId = req.user.id;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const offset = (page - 1) * limit;
 
-    const likes = await Like.findAll({
+    const { rows, count } = await Like.findAndCountAll({
       where: { userId },
+      order: [["createdAt", "DESC"]],
+      limit,
+      offset,
       include: [
         {
           model: Post,
@@ -85,7 +91,7 @@ const getUserLikes = async (req, res) => {
       ]
     });
 
-    const formattedLikes = likes.map(like => {
+    const formattedLikes = rows.map(like => {
       const post = like.Post;
       return {
         postId: post.id,
@@ -98,11 +104,18 @@ const getUserLikes = async (req, res) => {
           username: post.User.username,
           image: post.User.image
         },
-        likedByCurrentUser: post.userId === parseInt(userId)
+        likedByCurrentUser: true
       };
     });
 
-    res.json({ totalLikes: formattedLikes.length, likes: formattedLikes });
+    const totalPages = Math.ceil(count / limit);
+    res.json({
+      totalLikes: count,
+      totalPages,
+      page,
+      limit,
+      likes: formattedLikes
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

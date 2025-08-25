@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getMyPosts, searchMyPosts } from "../services/Post";
+import { getMyPosts, searchMyPosts, updateMyPost, deleteMyPost } from "../services/Post";
 import PostCard from "../../../components/Home/Postcard";
 import { likePost } from "../../profile/services/Home";
 import axiosInstance from "../../../AxiosInstance";
@@ -14,6 +14,9 @@ export default function ViewPost() {
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editCaption, setEditCaption] = useState("");
+  const [editImage, setEditImage] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -108,6 +111,61 @@ export default function ViewPost() {
     }
   };
 
+  const startEdit = (post) => {
+    setEditingId(post.id);
+    setEditCaption(post.caption || "");
+    setEditImage(null);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditCaption("");
+    setEditImage(null);
+  };
+
+  const submitEdit = async () => {
+    if (!editingId) return;
+    try {
+      // Show local preview immediately if an image is selected
+      let tempUrl = null;
+      if (editImage) {
+        tempUrl = URL.createObjectURL(editImage);
+        setPosts((prev) => prev.map((p) => p.id === editingId ? { ...p, imagePath: tempUrl } : p));
+      }
+
+      const updated = await updateMyPost(editingId, { caption: editCaption, image: editImage });
+      const serverCaption = updated.post?.caption ?? editCaption;
+      const serverImagePath = updated.post?.imagePath;
+      setPosts((prev) => prev.map((p) => {
+        if (p.id !== editingId) return p;
+        const nextImagePath = serverImagePath ? `${serverImagePath}?t=${Date.now()}` : p.imagePath;
+        return { ...p, caption: serverCaption, imagePath: nextImagePath };
+      }));
+
+      if (tempUrl) {
+        URL.revokeObjectURL(tempUrl);
+      }
+
+      cancelEdit();
+      // Ensure full rerender with fresh data
+      loadPosts(1, true);
+    } catch (e) {
+      console.error("Failed to update post", e);
+    }
+  };
+
+  const handleDelete = async (postId) => {
+    try {
+      await deleteMyPost(postId);
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+      // Refresh from server to keep pagination and counts correct
+      setPage(1);
+      loadPosts(1, true);
+    } catch (e) {
+      console.error("Failed to delete post", e);
+    }
+  };
+
   return (
     <div className="viewpost-container">
       <input
@@ -122,17 +180,40 @@ export default function ViewPost() {
       <div className="viewpost-grid">
         {posts.length > 0 ? (
           posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={{
-                ...post,
-                username: post.username || user?.username || "Me",
-                profileImage: post.profileImage || user?.image || null,
-                image: post.image || null,
-                isOwnPost: true,
-              }}
-              onLike={handleLike}
-            />
+            <div key={post.id} className="viewpost-item">
+              <PostCard
+                post={{
+                  ...post,
+                  username: post.username || user?.username || "Me",
+                  profileImage: post.profileImage || user?.image || null,
+                  image: post.image || null,
+                  isOwnPost: true,
+                }}
+                onLike={handleLike}
+                onUnlike={() => {}}
+              />
+
+              <div className="owner-actions">
+                {editingId === post.id ? (
+                  <div className="edit-form">
+                    <input
+                      type="text"
+                      value={editCaption}
+                      onChange={(e) => setEditCaption(e.target.value)}
+                      placeholder="Edit caption"
+                    />
+                    <input type="file" onChange={(e) => setEditImage(e.target.files?.[0] || null)} />
+                    <button onClick={submitEdit}>Save</button>
+                    <button onClick={cancelEdit}>Cancel</button>
+                  </div>
+                ) : (
+                  <div className="actions-row">
+                    <button onClick={() => startEdit(post)}>Edit</button>
+                    <button onClick={() => handleDelete(post.id)}>Delete</button>
+                  </div>
+                )}
+              </div>
+            </div>
           ))
         ) : (
           <p className="no-posts">No posts found.</p>

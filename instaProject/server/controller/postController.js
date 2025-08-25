@@ -31,7 +31,7 @@ const updatePost = asyncHandler(async (req, res) => {
   if (!post) return res.status(404).json({ message: "Post not found or unauthorized" });
 
   post.caption = caption || post.caption;
-  if (req.file) post.image = req.file.buffer;
+  if (req.file) post.imagePath =  req.file ? `/uploads/${req.file.filename}` : null ;
 
   await post.save();
   res.status(201).json({ message: "Post Updated", caption: post.caption , id : post.id });

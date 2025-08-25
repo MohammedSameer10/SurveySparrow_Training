@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import "./PostCard.css";
+import { Heart } from "lucide-react";
 
-const PostCard = ({ post, onLike, onFollow }) => {
+const PostCard = ({ post, onLike, onUnlike, onFollow }) => {
   const [feedback, setFeedback] = useState(""); // Feedback message
 
   const handleLike = () => {
     onLike(post.id);
-    setFeedback("You liked this post ❤️");
-    setTimeout(() => setFeedback(""), 1500); // hide after 1.5s
+    setFeedback("You liked this post");
+    setTimeout(() => setFeedback(""), 1500);
+  };
+
+  const handleUnlike = () => {
+    onUnlike(post.id);
+    setFeedback("You removed your like");
+    setTimeout(() => setFeedback(""), 1500);
   };
 
   const handleFollow = () => {
@@ -60,14 +67,22 @@ const PostCard = ({ post, onLike, onFollow }) => {
 
       {/* Actions */}
       <div className="post-footer">
-        <button
-          onClick={!post.likedByCurrentUser ? handleLike : undefined}
-          disabled={post.likedByCurrentUser}
-          className={post.likedByCurrentUser ? "liked" : ""}
-        >
-          👍
-        </button>
-        <span>{post.likeCount || 0}</span>
+        <div className="left-actions">
+          <button
+            onClick={post.likedByCurrentUser ? handleUnlike : handleLike}
+            className={post.likedByCurrentUser ? "liked" : ""}
+            aria-label={post.likedByCurrentUser ? "Unlike" : "Like"}
+          >
+            <Heart fill={post.likedByCurrentUser ? "#e0245e" : "none"} color={post.likedByCurrentUser ? "#e0245e" : "currentColor"} />
+          </button>
+          <span>{post.likes ?? post.likeCount ?? 0}</span>
+        </div>
+
+        {post.isOwnPost && (
+          <div className="right-actions">
+            {/* Placeholders for edit/delete buttons from parent layout */}
+          </div>
+        )}
       </div>
 
       {/* Feedback Message */}

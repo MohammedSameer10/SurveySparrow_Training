@@ -34,6 +34,27 @@
   box-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
 }
 
+.search-bar .icon-btn {
+  margin-right: 8px;
+  background: #fff;
+  border: 1px solid #ddd;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-filter {
+  margin: 0 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+}
+
 /* ===========================
    Posts Wrapper
 =========================== */

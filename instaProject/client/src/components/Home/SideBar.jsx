@@ -12,31 +12,17 @@ import {
 } from "lucide-react";
 import axiosInstance from "../../AxiosInstance"; 
 import "./Sidebar.css";
+import { useUser } from "../../store/UserContext.jsx";
 
 export default function Sidebar() {
-  const [user, setUser] = useState(null);
+  const { user, refreshUser } = useUser();
   const navigate = useNavigate();
-
   useEffect(() => {
-    console.log("Fetching current user...");
-    const fetchUserData = async () => {
-      try {
-        const res = await axiosInstance.get("/users/getCurrentUser");
-        console.log("User data:", res.data);
-        setUser(res.data);
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        setUser({
-          username: "username",
-          bio: "bio.....",
-          followers: 12,
-          following: 34,
-          image: null,
-        });
-      }
-    };
-    fetchUserData();
-  }, []);
+    // Ensure user is fetched when sidebar mounts if not already
+    if (!user) {
+      refreshUser();
+    }
+  }, [user, refreshUser]);
 
   const menuItems = [
     { name: "home", icon: <Home />, route: "/home" },

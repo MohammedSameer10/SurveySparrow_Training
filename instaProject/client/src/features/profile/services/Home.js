@@ -28,6 +28,19 @@ export const likePost = async (postId) => {
   }
 };
 
+export const removeLike = async (postId) => {
+  try {
+    await axios.delete(`/like/remove`, {
+      data: { postId },
+      withCredentials: true
+    });
+    return true;
+  } catch (error) {
+    console.error("Error removing like:", error);
+    return null;
+  }
+};
+
 // Follow user
 export const followUser = async (followingId) => {
   try {
@@ -64,8 +77,16 @@ export const getFollowing = async () => {
   return res.data;
 };
 
-export const searchPosts = async (query) => {
-  const res = await axios.post("/post/search", { query });
-  console.log(res.data)
+export const searchPosts = async (
+  searchTerm,
+  { filterBy = "caption", sortOrder = "DESC", page = 1, limit = 50 } = {}
+) => {
+  const res = await axios.post("/post/search", {
+    searchTerm,
+    filterBy,
+    sortOrder,
+    page,
+    limit,
+  });
   return res.data;
 };

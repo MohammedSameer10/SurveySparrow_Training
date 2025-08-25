@@ -14,7 +14,7 @@ router.delete("/delete/:id", deletePost);
 
 router.get("/getFeeds", getFeeds);
 
-router.get("/search", searchPosts);
+router.post("/search", searchPosts);
 
 router.post("/searchMyPost", searchMyPost);
 

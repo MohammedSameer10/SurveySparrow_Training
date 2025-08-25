@@ -70,6 +70,7 @@
 .action-btn.follow {
   background: #007bff;
   color: white;
+  margin: 5px;
 }
 
 .action-btn.unfollow {
@@ -84,4 +85,8 @@
   color: #333;
   font-size: 14px;
   border-left: 4px solid #007bff;
+}
+.action-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

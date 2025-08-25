@@ -12,7 +12,7 @@ const BASE_URL = "http://localhost:8080";
 
 export default function FollowPage() {
   const location = useLocation();
-  const { type } = location.state || {}; // "followers" or "following"
+  const { type } = location.state || {}; 
 
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState("");
@@ -26,7 +26,7 @@ export default function FollowPage() {
           setUsers(
             data.map((f) => ({
               ...f.FollowerUser,
-              isFollowing: true, // followers are already following you
+              isFollowing: true,
             }))
           );
         } else {
@@ -34,7 +34,7 @@ export default function FollowPage() {
           setUsers(
             data.map((f) => ({
               ...f.FollowingUser,
-              isFollowing: true, // you follow them
+              isFollowing: true,
             }))
           );
         }
@@ -54,7 +54,7 @@ export default function FollowPage() {
       setMessage(`✅ You followed ${username}`);
     } catch (err) {
       console.log(err);
-      setMessage("❌ Failed to follow. Try again.", );
+      setMessage("❌ Failed to follow. Try again.");
     }
   };
 
@@ -66,7 +66,7 @@ export default function FollowPage() {
       );
       setMessage(`🚫 You unfollowed ${username}`);
     } catch (err) {
-       console.log(err);
+      console.log(err);
       setMessage("❌ Failed to unfollow. Try again.");
     }
   };
@@ -100,21 +100,18 @@ export default function FollowPage() {
               <p className="profile-bio">{user.bio || "No bio available"}</p>
             </div>
             <div className="profile-action">
-              {user.isFollowing ? (
-                <button
-                  className="action-btn unfollow"
-                  onClick={() => handleUnfollow(user.id, user.username)}
-                >
-                  Unfollow
-                </button>
-              ) : (
-                <button
-                  className="action-btn follow"
-                  onClick={() => handleFollow(user.id, user.username)}
-                >
-                  Follow
-                </button>
-              )}
+              <button
+                className="action-btn follow"
+                onClick={() => handleFollow(user.id, user.username)}
+              >
+                Follow
+              </button>
+              <button
+                className="action-btn unfollow"
+                onClick={() => handleUnfollow(user.id, user.username)}
+              >
+                Unfollow
+              </button>
             </div>
           </div>
         ))

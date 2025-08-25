@@ -148,7 +148,7 @@ const searchPosts = asyncHandler(async (req, res) => {
 
   const posts = await Post.findAll({
     where: whereClause,
-    include: [{ model: User, attributes: ["id", "username"] }],
+    include: [{ model: User, attributes: ["id", "username", "image"] }],
     order: [["createdAt", sortOrder]],
     offset: (page - 1) * limit,
     limit: parseInt(limit),

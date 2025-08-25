@@ -63,3 +63,9 @@ export const getFollowing = async () => {
   const res = await axios.get("/follow/following");
   return res.data;
 };
+
+export const searchPosts = async (query) => {
+  const res = await axios.post("/post/search", { query });
+  console.log(res.data)
+  return res.data;
+};

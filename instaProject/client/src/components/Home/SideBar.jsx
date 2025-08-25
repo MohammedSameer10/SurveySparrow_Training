@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Home,
@@ -10,7 +10,6 @@ import {
   Download,
   LogOut,
 } from "lucide-react";
-import axiosInstance from "../../AxiosInstance"; 
 import "./Sidebar.css";
 import { useUser } from "../../store/UserContext.jsx";
 

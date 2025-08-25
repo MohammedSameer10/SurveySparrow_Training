@@ -3,7 +3,8 @@ import axios from "../../../AxiosInstance";
 // Get feeds
 export const getFeeds = async (page = 1) => {
   try {
-    const res = await axios.get(`/post/getFeeds`,{
+    // Server expects page in request body; use POST for consistency
+    const res = await axios.post(`/post/getFeeds`,{
         page
     });
     return res.data;

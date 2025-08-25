@@ -23,7 +23,7 @@ const UpdateUser = () => {
         const user = res.data;
         setFormData({
           username: user.username || "",
-          bio: user.bio || "",
+          bio: user.bio || ` I am ${user.username}`,
           email: user.email || "",
           password: "", // leave empty for security
           image: null, // don't prefill file

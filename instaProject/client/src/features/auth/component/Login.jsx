@@ -6,8 +6,10 @@ import loginPageImage from "../../../assets/loginPageImage.avif";
 import GoogleSignInButton from "../../../components/Login/GoogleSignInbutton";
 import Loader from "../../../components/Login/Loader";
 import { loginUser } from "../../../features/auth/services/authService"; 
+import { useUser } from "../../../store/UserContext.jsx";
 
 const Login = () => {
+  const { refreshUser } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showLoader, setShowLoader] = useState(false);
@@ -34,10 +36,12 @@ const Login = () => {
 
       if (res.status === 200) {
         setShowLoader(true);
+        // Ensure global user is refreshed for the new session
+        await refreshUser();
         setTimeout(() => {
           setShowLoader(false);
           navigate("/home");
-        }, 2000);
+        }, 500);
       }
     } catch (error) {
       console.error("Login failed:", error);

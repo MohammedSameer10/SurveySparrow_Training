@@ -1,4 +1,4 @@
-const { Notification, User } = require("../model");
+const { Notification, User, Post, Like, Follower, Sequelize } = require("../model");
 const asyncHandler = require("express-async-handler");
 
 const getNotifications = asyncHandler(async (req, res) => {
@@ -44,3 +44,43 @@ const cleanupNotifications = asyncHandler(async () => {
 });
 
 module.exports = { getNotifications, updateNotification, cleanupNotifications };
+
+// Build user's own activity feed (posts created, likes made, follows made)
+const getMyActivity = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+
+  // Pull a window from each source then merge/sort; widen window to improve mix
+  const windowSize = limit * 3;
+
+  const [posts, likes, follows] = await Promise.all([
+    Post.findAll({ where: { userId }, order: [["createdAt", "DESC"]], limit: windowSize, attributes: ["id", "caption", "imagePath", "createdAt"] }),
+    Like.findAll({
+      where: { userId },
+      order: [["createdAt", "DESC"]],
+      limit: windowSize,
+      attributes: ["postId", "createdAt"],
+      include: [{
+        model: Post,
+        attributes: ["id", "caption", "imagePath"],
+        include: [{ model: User, attributes: ["id", "username", "image"] }]
+      }]
+    }),
+    Follower.findAll({ where: { followerId: userId }, order: [["createdAt", "DESC"]], limit: windowSize, attributes: ["followingId", "createdAt"], include: [{ model: User, as: "FollowingUser", attributes: ["id", "username", "image"] }] })
+  ]);
+
+  const items = [];
+  posts.forEach(p => items.push({ type: "post", createdAt: p.createdAt, data: { postId: p.id, caption: p.caption, imagePath: p.imagePath } }));
+  likes.forEach(l => items.push({ type: "like", createdAt: l.createdAt, data: { postId: l.postId, caption: l.Post?.caption, imagePath: l.Post?.imagePath, owner: l.Post?.User ? { id: l.Post.User.id, username: l.Post.User.username, image: l.Post.User.image } : null } }));
+  follows.forEach(f => items.push({ type: "follow", createdAt: f.createdAt, data: { userId: f.FollowingUser?.id, username: f.FollowingUser?.username, image: f.FollowingUser?.image } }));
+
+  items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const total = items.length;
+  const start = (page - 1) * limit;
+  const paged = items.slice(start, start + limit);
+  const totalPages = Math.ceil(total / limit) || 1;
+  res.json({ items: paged, page, limit, total, totalPages, hasMore: page < totalPages });
+});
+
+module.exports.getMyActivity = getMyActivity;

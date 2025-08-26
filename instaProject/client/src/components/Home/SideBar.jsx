@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Home,
@@ -9,6 +9,7 @@ import {
   Heart,
   Download,
   LogOut,
+  ChevronDown,
 } from "lucide-react";
 import "./Sidebar.css";
 import { useUser } from "../../store/UserContext.jsx";
@@ -16,6 +17,7 @@ import { useUser } from "../../store/UserContext.jsx";
 export default function Sidebar() {
   const { user, refreshUser } = useUser();
   const navigate = useNavigate();
+  const [profileOpen, setProfileOpen] = useState(false);
   useEffect(() => {
     // Ensure user is fetched when sidebar mounts if not already
     if (!user) {
@@ -25,12 +27,17 @@ export default function Sidebar() {
 
   const menuItems = [
     { name: "home", icon: <Home />, route: "/home" },
-    { name: "update profile", icon: <User />, route: "/updateUser" },
     { name: "search profile", icon: <Search />, route: "/searchProfile" },
     { name: "add post", icon: <PlusCircle />, route: "/addPost" },
     { name: "notification", icon: <Bell />, route: "/notification" },
-    { name: "view likes", icon: <Heart />, route: "/viewLike" },
-    { name: "download csv", icon: <Download />, route: "/downloadCsv" },
+  ];
+
+  const profileItems = [
+    { name: "update profile", icon: <User />, onClick: () => navigate("/updateUser") },
+    { name: "view my post", icon: <Search />, onClick: () => navigate("/viewPost", { state: { user } }) },
+    { name: "view likes", icon: <Heart />, onClick: () => navigate("/viewLike") },
+    { name: "download data", icon: <Download />, onClick: () => navigate("/downloadCsv") },
+    { name: "check activity", icon: <Bell />, onClick: () => navigate("/activity") },
   ];
 
   return (
@@ -69,6 +76,7 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <nav className="menu">
+          {/* Primary items */}
           {menuItems.map((item) => (
             <button
               key={item.name}
@@ -80,16 +88,25 @@ export default function Sidebar() {
             </button>
           ))}
 
-          {/* Handle view post with user data */}
+          {/* Profile group */}
           <button
             className="menu-item"
-            onClick={() => {
-              navigate("/viewPost", { state: { user } });
-            }}
+            onClick={() => setProfileOpen((o) => !o)}
           >
-            <span className="icon"><Search /></span>
-            view post
+            <span className="icon"><User /></span>
+            profile
+            <span style={{ marginLeft: "auto" }}><ChevronDown size={16} style={{ transform: profileOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} /></span>
           </button>
+          {profileOpen && (
+            <div style={{ marginLeft: 28, display: "flex", flexDirection: "column", gap: 6 }}>
+              {profileItems.map((sub) => (
+                <button key={sub.name} className="menu-item" onClick={sub.onClick}>
+                  <span className="icon">{sub.icon}</span>
+                  {sub.name}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Logout */}
           <div className="logout-container">

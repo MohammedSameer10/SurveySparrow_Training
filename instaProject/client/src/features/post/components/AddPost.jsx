@@ -1,28 +1,47 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { addPost } from "../services/Post";  // ✅ import service
 import "../styles/AddPost.css";
 
-export default function AddPost() {
+export default function AddPost({ onSuccess }) {
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
   const [showToast, setShowToast] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!caption || !image) return;
+    if (!caption && !image) return; // allow caption-only or image-only
 
     try {
       const formData = new FormData();
-      formData.append("caption", caption);
-      formData.append("image", image);
+      if (caption) formData.append("caption", caption);
+      if (image) formData.append("image", image);
 
-      await addPost(formData);  // ✅ use service instead of axios directly
+      const res = await addPost(formData);  // ✅ use service instead of axios directly
 
       setCaption("");
       setImage(null);
       setShowToast(true);
 
       setTimeout(() => setShowToast(false), 3000);
+
+      if (onSuccess) {
+        onSuccess(res);
+      }
+      // Redirect to home and show the new post at top
+      navigate('/home', {
+        replace: true,
+        state: {
+          newPost: {
+            id: res?.id,
+            caption: res?.caption ?? caption ?? "",
+            imagePath: res?.image ?? null,
+            createdAt: new Date().toISOString()
+          },
+          toast: '✅ Your post has been added!'
+        }
+      });
     } catch (err) {
       console.error("Error adding post:", err);
     }

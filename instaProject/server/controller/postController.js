@@ -63,7 +63,10 @@ const getFeeds = asyncHandler(async (req, res) => {
   const followingIds = following.map(f => f.followingId);
   followingIds.push(currentUserId); // include self posts
 
-  // Fetch posts including user info and likes
+  // Count total posts for pagination
+  const total = await Post.count({ where: { userId: followingIds } });
+
+  // Fetch posts including user info and likes with proper pagination
   const posts = await Post.findAll({
     where: { userId: followingIds },
     include: [
@@ -73,18 +76,16 @@ const getFeeds = asyncHandler(async (req, res) => {
       },
       {
         model: Like, // include likes
-        attributes: ["id", "userId"] // we only need userId for like count & check
+        attributes: ["id", "userId"]
       }
     ],
     order: [["createdAt", "DESC"]],
-    limit
+    limit,
+    offset
   });
 
-  const shuffled = posts.sort(() => 0.5 - Math.random());
-  const paginated = shuffled.slice(offset, offset + limit);
-
   // Flatten posts and include likeCount
-  const flattened = paginated.map(post => ({
+  const flattened = posts.map(post => ({
     id: post.id,
     caption: post.caption,
     image: post.image,
@@ -94,15 +95,15 @@ const getFeeds = asyncHandler(async (req, res) => {
     userId: post.userId,
     username: post.User?.username || "Unknown",
     profileImage: post.User?.image || null,
-    likeCount: post.Likes.length, // total likes
-    likedByCurrentUser: post.Likes.some(like => like.userId === currentUserId) // optional
+    likeCount: post.Likes.length,
+    likedByCurrentUser: post.Likes.some(like => like.userId === currentUserId)
   }));
 
   res.status(200).json({
     page,
     postLength: flattened.length,
     posts: flattened,
-    hasMore: offset + limit < shuffled.length
+    hasMore: offset + flattened.length < total
   });
 });
 

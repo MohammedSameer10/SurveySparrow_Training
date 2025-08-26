@@ -10,11 +10,11 @@ import PostCard from "../../../components/Home/Postcard";
 import "../styles/Home.css";
 import { Search as SearchIcon, Plus } from "lucide-react";
 import AddPost from "../../post/components/AddPost";
-import { useUser } from "../../../store/UserContext.jsx";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { user } = useUser();
+  const user = useSelector((state) => state.user.user);
   const location = useLocation();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
@@ -77,7 +77,7 @@ const normalizePosts = (posts = []) =>
   const fetchFeeds = async (pageNum) => {
     setLoading(true);
     try {
-      const data = await getFeeds(pageNum);
+      const data = await getFeeds(pageNum, 20);
 
       if (data && data.posts && data.posts.length > 0) {
         const normalized = normalizePosts(data.posts);
@@ -236,25 +236,26 @@ const normalizePosts = (posts = []) =>
             onFollow={handleFollow}
           />
         ))}
-
-        {!searching && (
-          <div style={{ textAlign: "center", margin: "20px 0" }}>
-            {hasMore ? (
-              <button
-                onClick={() => setPage((prev) => prev + 1)}
-                disabled={loading}
-                className="load-more-btn"
-              >
-                {loading ? "Loading..." : "Load More"}
-              </button>
-            ) : (
-              <p style={{ color: "#555", fontStyle: "italic" }}>
-                🌱 Go touch some grass
-              </p>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* Load More aligned with ViewPost */}
+      {hasMore && !loading && !query && (
+        <div style={{ textAlign: "center", margin: "20px 0" }}>
+          <button
+            onClick={() => setPage((prev) => prev + 1)}
+            disabled={loading}
+            className="load-more-btn"
+          >
+            {loading ? "Loading..." : "Load More"}
+          </button>
+        </div>
+      )}
+
+      {!hasMore && !query && (
+        <div style={{ textAlign: "center", margin: "12px 0", color: "#555", fontStyle: "italic" }}>
+          <span>🌱 Go touch some grass</span>
+        </div>
+      )}
     </div>
   );
 };

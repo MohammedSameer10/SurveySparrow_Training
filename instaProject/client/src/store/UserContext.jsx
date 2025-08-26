@@ -5,7 +5,7 @@ const UserContext = createContext({
   user: null,
   isLoading: false,
   refreshUser: async () => {},
-  bumpFollowingCounts: (deltaFollowers = 0, deltaFollowing = 0) => {}
+  bumpFollowingCounts: () => {}
 });
 
 export const UserProvider = ({ children }) => {
@@ -44,6 +44,7 @@ export const UserProvider = ({ children }) => {
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUser = () => useContext(UserContext);
 
 

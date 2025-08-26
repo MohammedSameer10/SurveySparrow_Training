@@ -14,8 +14,6 @@ const register = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Username, email, and password are required");
   }
-
-
   const existingEmail = await User.findOne({ where: { email } });
   if (existingEmail) {
     res.status(400);
@@ -136,7 +134,6 @@ const updateUser = asyncHandler(async (req, res) => {
 
   const { username, newEmail, bio, password } = req.body || {};
 
-  // Update username
   if (username && username !== user.username) {
     const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {

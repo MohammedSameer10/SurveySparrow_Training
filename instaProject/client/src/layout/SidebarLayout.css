@@ -1,15 +1,15 @@
 .layout {
   display: flex;
-  height: 100vh; /* full height */
-  overflow: hidden; /* prevent double scrollbars */
+  height: 100vh; 
+  overflow: hidden; 
 }
 
 .sidebar {
-  flex-shrink: 0; /* prevent shrinking */
+  flex-shrink: 0; 
 }
 
 .content {
   flex: 1;
-  overflow-y: auto; /* only content scrolls */
+  overflow-y: auto; 
   background: #f8f9fa;
 }

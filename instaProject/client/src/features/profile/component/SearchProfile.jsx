@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { searchUsers } from "../services/Profile";
 import { followUser, unFollowUser } from "../services/Home"; // <-- use Home.js services
@@ -11,8 +11,14 @@ export default function SearchProfile() {
   const [results, setResults] = useState([]);
   const [messages, setMessages] = useState({}); // { [userId]: message }
   const { bumpFollowingCounts } = useUser();
+  const searchCooldownRef = useRef(false);
+  const followCooldownRef = useRef(new Set());
+  const COOLDOWN_MS = 800;
 
   const handleSearch = async () => {
+    if (searchCooldownRef.current) return;
+    searchCooldownRef.current = true;
+    setTimeout(() => (searchCooldownRef.current = false), COOLDOWN_MS);
     if (!query.trim()) return;
     try {
       const res = await searchUsers({
@@ -28,6 +34,9 @@ export default function SearchProfile() {
 
   const handleFollow = async (userId) => {
     try {
+      if (followCooldownRef.current.has(userId)) return;
+      followCooldownRef.current.add(userId);
+      setTimeout(() => followCooldownRef.current.delete(userId), COOLDOWN_MS);
       // optimistic update
       setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: true } : u)));
       setMessages((prev) => ({ ...prev, [userId]: "Followed" }));
@@ -43,6 +52,9 @@ export default function SearchProfile() {
 
   const handleUnfollow = async (userId) => {
     try {
+      if (followCooldownRef.current.has(userId)) return;
+      followCooldownRef.current.add(userId);
+      setTimeout(() => followCooldownRef.current.delete(userId), COOLDOWN_MS);
       // optimistic update
       setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: false } : u)));
       setMessages((prev) => ({ ...prev, [userId]: "Unfollowed" }));

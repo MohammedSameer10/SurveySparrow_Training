@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   getFeeds,
   likePost,
@@ -15,10 +15,12 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [query, setQuery] = useState(""); // search query
+  const [query, setQuery] = useState(""); 
   const [searching, setSearching] = useState(false);
-  const [toast, setToast] = useState("");
-  const [filterBy, setFilterBy] = useState("caption"); // caption | username
+  const [filterBy, setFilterBy] = useState("caption"); 
+  const likeCooldownRef = useRef(new Set());
+  const followCooldownRef = useRef(new Set());
+  const COOLDOWN_MS = 800;
 
   useEffect(() => {
     if (!query) fetchFeeds(page);
@@ -59,36 +61,36 @@ const normalizePosts = (posts = []) =>
   };
 
   const handleLike = async (postId) => {
-    // optimistic
+    if (likeCooldownRef.current.has(postId)) return;
+    likeCooldownRef.current.add(postId);
+    setTimeout(() => likeCooldownRef.current.delete(postId), COOLDOWN_MS);
+
     setPosts((prev) => prev.map((p) => p.id === postId ? { ...p, likes: (p.likes || 0) + 1, likedByCurrentUser: true } : p));
     const res = await likePost(postId);
     if (!res) {
-      // rollback
       setPosts((prev) => prev.map((p) => p.id === postId ? { ...p, likes: Math.max((p.likes || 1) - 1, 0), likedByCurrentUser: false } : p));
     }
   };
 
   const handleUnlike = async (postId) => {
-    // optimistic
+    if (likeCooldownRef.current.has(postId)) return;
+    likeCooldownRef.current.add(postId);
+    setTimeout(() => likeCooldownRef.current.delete(postId), COOLDOWN_MS);
     setPosts((prev) => prev.map((p) => p.id === postId ? { ...p, likes: Math.max((p.likes || 1) - 1, 0), likedByCurrentUser: false } : p));
     const res = await removeLike(postId);
     if (!res) {
-      // rollback
       setPosts((prev) => prev.map((p) => p.id === postId ? { ...p, likes: (p.likes || 0) + 1, likedByCurrentUser: true } : p));
     }
   };
 
   const handleFollow = async (userId) => {
-    // optimistic: mark posts from this user as followed to disable button
+    if (followCooldownRef.current.has(userId)) return;
+    followCooldownRef.current.add(userId);
+    setTimeout(() => followCooldownRef.current.delete(userId), COOLDOWN_MS);
     setPosts((prev) => prev.map((p) => p.userId === userId ? { ...p, followed: true } : p));
-    setToast("Followed user");
-    setTimeout(() => setToast(""), 1500);
     const res = await followUser(userId);
     if (!res) {
-      // rollback
       setPosts((prev) => prev.map((p) => p.userId === userId ? { ...p, followed: false } : p));
-      setToast("Failed to follow");
-      setTimeout(() => setToast(""), 1500);
     }
   };
 
@@ -139,11 +141,6 @@ const normalizePosts = (posts = []) =>
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-
-      {toast && (
-        <div className="inline-toast">{toast}</div>
-      )}
-
       <div className="posts-wrapper">
         {posts.map((post) => (
           <PostCard

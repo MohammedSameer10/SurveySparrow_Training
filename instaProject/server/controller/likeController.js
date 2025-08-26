@@ -91,20 +91,20 @@ const getUserLikes = async (req, res) => {
       ]
     });
 
-    const formattedLikes = rows.map(like => {
+    const formattedLikes = rows.map((like) => {
       const post = like.Post;
+      const postUser = post?.User || null;
+
       return {
-        postId: post.id,
-        caption: post.caption,
-        imagePath: post.imagePath,
-        createdAt: post.createdAt,
-        likeCount: post.Likes.length,
-        user: {
-          id: post.User.id,
-          username: post.User.username,
-          image: post.User.image
-        },
-        likedByCurrentUser: true
+        postId: post?.id,
+        caption: post?.caption,
+        imagePath: post?.imagePath,
+        createdAt: post?.createdAt,
+        likeCount: Array.isArray(post?.Likes) ? post.Likes.length : 0,
+        user: postUser
+          ? { id: postUser.id, username: postUser.username, image: postUser.image }
+          : { id: null, username: "Unknown", image: null },
+        likedByCurrentUser: true,
       };
     });
 
@@ -114,7 +114,7 @@ const getUserLikes = async (req, res) => {
       totalPages,
       page,
       limit,
-      likes: formattedLikes
+      likes: formattedLikes,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

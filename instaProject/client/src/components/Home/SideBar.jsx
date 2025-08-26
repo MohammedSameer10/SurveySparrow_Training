@@ -12,18 +12,22 @@ import {
   ChevronDown,
 } from "lucide-react";
 import "./Sidebar.css";
-import { useUser } from "../../store/UserContext.jsx";
+import { useSelector, useDispatch } from 'react-redux';
+import { refreshUser } from '../../store/userSlice';
 
 export default function Sidebar() {
-  const { user, refreshUser } = useUser();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const hasInitialized = useSelector((state) => state.user.hasInitialized);
+  const isLoading = useSelector((state) => state.user.isLoading);
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
+  
   useEffect(() => {
-    // Ensure user is fetched when sidebar mounts if not already
-    if (!user) {
-      refreshUser();
+    if (!hasInitialized) {
+      dispatch(refreshUser());
     }
-  }, [user, refreshUser]);
+  }, [hasInitialized, dispatch]);
 
   const menuItems = [
     { name: "home", icon: <Home />, route: "/home" },
@@ -49,72 +53,73 @@ export default function Sidebar() {
             {user?.image ? (
               <img
                 src={`http://localhost:8080${user.image}`}
-                alt={user.username}
+                alt={user?.username || 'user'}
                 className="avatar-img"
               />
             ) : (
               "⚡"
             )}
           </div>
-          <h2 className="username">{user?.username}</h2>
-          <p className="bio">{user?.bio}</p>
-          <div className="stats">
-            <span
-              className="stats-link"
-              onClick={() => navigate("/followPage", { state: { type: "followers" } })}
-            >
-              {user?.followers} followers
-            </span>
-            <span
-              className="stats-link"
-              onClick={() => navigate("/followPage", { state: { type: "following" } })}
-            >
-              {user?.following} following
-            </span>
+          <div className="hover-content">
+            <h2 className="username">{user?.username}</h2>
+            <p className="bio">{user?.bio}</p>
+            <div className="stats">
+              <span
+                className="stats-link"
+                onClick={() => navigate("/followPage", { state: { type: "followers" } })}
+              >
+                {user?.followers} followers
+              </span>
+              <span
+                className="stats-link"
+                onClick={() => navigate("/followPage", { state: { type: "following" } })}
+              >
+                {user?.following} following
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="menu">
-          {/* Primary items */}
           {menuItems.map((item) => (
             <button
               key={item.name}
               className="menu-item"
               onClick={() => navigate(item.route)}
+              title={item.name}
             >
               <span className="icon">{item.icon}</span>
-              {item.name}
+              <span className="menu-text">{item.name}</span>
             </button>
           ))}
 
-          {/* Profile group */}
           <button
             className="menu-item"
             onClick={() => setProfileOpen((o) => !o)}
+            title="profile"
           >
             <span className="icon"><User /></span>
-            profile
-            <span style={{ marginLeft: "auto" }}><ChevronDown size={16} style={{ transform: profileOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} /></span>
+            <span className="menu-text">profile</span>
+            <span className="chevron"><ChevronDown size={16} style={{ transform: profileOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} /></span>
           </button>
           {profileOpen && (
-            <div style={{ marginLeft: 28, display: "flex", flexDirection: "column", gap: 6 }}>
+            <div className="profile-submenu">
               {profileItems.map((sub) => (
-                <button key={sub.name} className="menu-item" onClick={sub.onClick}>
+                <button key={sub.name} className="menu-item submenu-item" onClick={sub.onClick}>
                   <span className="icon">{sub.icon}</span>
-                  {sub.name}
+                  <span className="menu-text">{sub.name}</span>
                 </button>
               ))}
             </div>
           )}
 
-          {/* Logout */}
           <div className="logout-container">
-            <button className="menu-item logout" onClick={() => navigate("/")}>
+            <button className="menu-item logout" onClick={() => navigate("/")} title="Logout">
               <span className="icon">
                 <LogOut />
               </span>
-              Logout
+              <span className="menu-text">Logout</span>
             </button>
           </div>
         </nav>

@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/Mohammedsameers/SurveySparrow_Training/instaProject/server/logs/.1a6f25008a5620ce756f22496c464199b6432947-audit.json",
+    "files": [
+        {
+            "date": 1756198480345,
+            "name": "/Users/Mohammedsameers/SurveySparrow_Training/instaProject/server/logs/error-2025-08-26.log",
+            "hash": "fab41bfd4f35e21212ad5e93f11c0a8901d7748aa5277d37d4fae67d05e3326e"
+        }
+    ],
+    "hashType": "sha256"
+}

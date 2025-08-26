@@ -13,6 +13,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const { cleanupNotifications } = require("./controller/notificationController");
 const tokenAuthenticator = require('./middleware/tokenAuthenticator');
+const { logger, loggerMiddleware } = require('./middleware/logger');
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(cookieParser())
+app.use(loggerMiddleware)
 app.use(errorHandler)
 
 app.get('/', (req, res) => {
@@ -37,20 +39,20 @@ app.use('/notification',notificationRouter);
 
 
 cron.schedule("0 0 * * *", () => {
-  console.log("Running notification cleanup...");
+  logger.info("Running notification cleanup...");
   cleanupNotifications();
 });
 
 
 models.sequelize.sync({ alter: true })
     .then(() => {
-        console.log("Database synced successfully");
+        logger.info("Database synced successfully");
     })
     .catch(err => {
-        console.error("Error syncing database:", err);
+        logger.error("Error syncing database:", err);
     });
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
-    console.log(`Server started at port : ${port}`);
+    logger.info(`Server started at port : ${port}`);
 });

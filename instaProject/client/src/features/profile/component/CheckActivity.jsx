@@ -44,16 +44,33 @@ export default function CheckActivity() {
                 borderColor: it.type === 'like' ? '#ffe4e6' : it.type === 'post' ? '#e0f2fe' : '#dcfce7'
               }}
             >
-            {it.type === 'like' && it.data.owner && (
+            {/* Avatar section for like/post/follow */}
+            {(it.type === 'like' && it.data.owner) && (
               <img
                 src={`http://localhost:8080${it.data.owner.image || ''}`}
                 alt={it.data.owner.username}
                 style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }}
               />
             )}
+            {(it.type === 'post' && it.data.owner) && (
+              <img
+                src={`http://localhost:8080${it.data.owner.image || ''}`}
+                alt={it.data.owner.username}
+                style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }}
+              />
+            )}
+            {(it.type === 'follow' && it.data.image) && (
+              <img
+                src={`http://localhost:8080${it.data.image || ''}`}
+                alt={it.data.username || 'user'}
+                style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }}
+              />
+            )}
             <div style={{ flex: 1 }}>
               {it.type === 'post' && (
-                <p style={{ margin: 0 }}>You posted{it.data.caption ? `: ${it.data.caption}` : ''}</p>
+                <p style={{ margin: 0 }}>
+                  You posted{it.data.caption ? `: ${it.data.caption}` : ''}
+                </p>
               )}
               {it.type === 'like' && (
                 <p style={{ margin: 0 }}>

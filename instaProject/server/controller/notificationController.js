@@ -3,7 +3,12 @@ const asyncHandler = require("express-async-handler");
 
 const getNotifications = asyncHandler(async (req, res) => {
   const notifications = await Notification.findAll({
-    where: { targetUserId: req.user.id ,  isRead: false}, 
+    where: {
+      targetUserId: req.user.id,
+      isRead: false,
+      // Exclude self-generated notifications
+      senderUserId: { [Sequelize.Op.ne]: req.user.id }
+    },
     include: [
       { model: User, as: "senderUser", attributes: ["id", "username", "email"] }
     ],
@@ -54,7 +59,8 @@ const getMyActivity = asyncHandler(async (req, res) => {
   // Pull a window from each source then merge/sort; widen window to improve mix
   const windowSize = limit * 3;
 
-  const [posts, likes, follows] = await Promise.all([
+  const [me, posts, likes, follows] = await Promise.all([
+    User.findByPk(userId, { attributes: ["id", "username", "image"] }),
     Post.findAll({ where: { userId }, order: [["createdAt", "DESC"]], limit: windowSize, attributes: ["id", "caption", "imagePath", "createdAt"] }),
     Like.findAll({
       where: { userId },
@@ -71,7 +77,7 @@ const getMyActivity = asyncHandler(async (req, res) => {
   ]);
 
   const items = [];
-  posts.forEach(p => items.push({ type: "post", createdAt: p.createdAt, data: { postId: p.id, caption: p.caption, imagePath: p.imagePath } }));
+  posts.forEach(p => items.push({ type: "post", createdAt: p.createdAt, data: { postId: p.id, caption: p.caption, imagePath: p.imagePath, owner: me ? { id: me.id, username: me.username, image: me.image } : null } }));
   likes.forEach(l => items.push({ type: "like", createdAt: l.createdAt, data: { postId: l.postId, caption: l.Post?.caption, imagePath: l.Post?.imagePath, owner: l.Post?.User ? { id: l.Post.User.id, username: l.Post.User.username, image: l.Post.User.image } : null } }));
   follows.forEach(f => items.push({ type: "follow", createdAt: f.createdAt, data: { userId: f.FollowingUser?.id, username: f.FollowingUser?.username, image: f.FollowingUser?.image } }));
 

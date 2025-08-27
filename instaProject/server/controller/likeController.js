@@ -21,7 +21,7 @@ const addLike = asyncHandler(async (req, res) => {
 
   if (post.userId !== req.user.id) {
    const s = await Notification.create({
-      message: `${req.user.username} liked your post`,
+      message: `${req.user.username} liked your post::postId=${post.id}::imagePath=${post.imagePath || ''}`,
       targetUserId: post.userId,   
       senderUserId: req.user.id     
     });
@@ -48,10 +48,21 @@ const removeLike = async (req, res) => {
         where: {
           targetUserId: post.userId,
           senderUserId: req.user.id,
+          // match base text only
           message: `${req.user.username} liked your post`
         }
       });
     }
+
+    // self activity for unlike
+    try {
+      const imagePath = post?.imagePath || '';
+      await Notification.create({
+        message: `You unliked a post::postId=${postId}::imagePath=${imagePath}`,
+        targetUserId: req.user.id,
+        senderUserId: req.user.id
+      });
+    } catch(_){}
 
     return res.status(200).json({ message: "Like removed" });
   } catch (err) {

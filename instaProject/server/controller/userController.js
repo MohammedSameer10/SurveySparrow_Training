@@ -173,6 +173,16 @@ const updateUser = asyncHandler(async (req, res) => {
 
   await user.save();
 
+  // Self activity: profile updated (for Check Activity)
+  try {
+    const { Notification } = require("../model");
+    await Notification.create({
+      message: "You updated profile",
+      targetUserId: user.id,
+      senderUserId: user.id,
+    });
+  } catch (_) {}
+
   res.status(200).json({
     success: true,
     message: "User updated successfully",

@@ -80,6 +80,9 @@ export default function CheckActivity() {
               {it.type === 'follow' && (
                 <p style={{ margin: 0 }}>You followed <strong>{it.data.username}</strong></p>
               )}
+              {it.type === 'activity' && (
+                <p style={{ margin: 0 }}>{it.data?.message || 'Activity'}</p>
+              )}
               <span style={{ color: '#777', fontSize: 12 }}>{new Date(it.createdAt).toLocaleString()}</span>
             </div>
             {it.data?.imagePath && (

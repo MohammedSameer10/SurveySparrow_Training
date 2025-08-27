@@ -1,12 +1,11 @@
-// features/profile/component/UpdateUser.jsx
 import React, { useState, useEffect } from "react";
 import { updateUser } from "../services/UpdateUser";
 import axiosInstance from "../../../AxiosInstance";
 import "../styles/UpdateUser.css";
-import { useUser } from "../../../store/UserContext.jsx";
-
+import { refreshUser } from "../../../store/userSlice";
+import { useDispatch } from "react-redux";
 const UpdateUser = () => {
-  const { refreshUser } = useUser();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
     bio: "",
@@ -25,8 +24,8 @@ const UpdateUser = () => {
           username: user.username || "",
           bio: user.bio || ` I am ${user.username}`,
           email: user.email || "",
-          password: "", // leave empty for security
-          image: null, // don't prefill file
+          password: user.password || "", 
+          image: null, 
         });
       } catch (err) {
         console.error("Failed to fetch user:", err);
@@ -62,10 +61,10 @@ const UpdateUser = () => {
       alert("Profile updated successfully!");
       console.log("Updated user:", res);
       // Immediately refresh global user so Sidebar and others update
-      await refreshUser();
+      await dispatch(refreshUser()).unwrap();
     } catch (err) {
       console.error(err);
-      alert(err.message || "Error updating profile");
+      alert( "Error updating profile");
     }
   };
 

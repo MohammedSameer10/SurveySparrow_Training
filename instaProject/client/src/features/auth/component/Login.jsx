@@ -6,10 +6,11 @@ import loginPageImage from "../../../assets/loginPageImage.avif";
 import GoogleSignInButton from "../../../components/Login/GoogleSignInbutton";
 import Loader from "../../../components/Login/Loader";
 import { loginUser } from "../../../features/auth/services/authService"; 
-import { useUser } from "../../../store/UserContext.jsx";
+import { useDispatch } from "react-redux";
+import { refreshUser } from "../../../store/userSlice";
 
 const Login = () => {
-  const { refreshUser } = useUser();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showLoader, setShowLoader] = useState(false);
@@ -37,7 +38,7 @@ const Login = () => {
       if (res.status === 200) {
         setShowLoader(true);
         // Ensure global user is refreshed for the new session
-        await refreshUser();
+        await dispatch(refreshUser()).unwrap();
         setTimeout(() => {
           setShowLoader(false);
           navigate("/home");

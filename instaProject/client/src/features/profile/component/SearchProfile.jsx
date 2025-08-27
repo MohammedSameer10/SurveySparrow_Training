@@ -1,16 +1,17 @@
 import { useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { searchUsers } from "../services/Profile";
-import { followUser, unFollowUser } from "../services/Home"; // <-- use Home.js services
+import { followUser, unFollowUser } from "../services/Home";
 import axiosInstance from "../../../AxiosInstance";
 import "../styles/SearchProfile.css";
-import { useUser } from "../../../store/UserContext.jsx";
+import { refreshUser, updateFollowingBy } from "../../../store/userSlice.js";
+import { useDispatch } from "react-redux";
 
 export default function SearchProfile() {
+  const dispatch = useDispatch();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [messages, setMessages] = useState({}); // { [userId]: message }
-  const { bumpFollowingCounts } = useUser();
   const searchCooldownRef = useRef(false);
   const followCooldownRef = useRef(new Set());
   const COOLDOWN_MS = 800;
@@ -37,16 +38,29 @@ export default function SearchProfile() {
       if (followCooldownRef.current.has(userId)) return;
       followCooldownRef.current.add(userId);
       setTimeout(() => followCooldownRef.current.delete(userId), COOLDOWN_MS);
+
       // optimistic update
-      setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: true } : u)));
+      setResults((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, isFollowing: true } : u))
+      );
       setMessages((prev) => ({ ...prev, [userId]: "Followed" }));
-      bumpFollowingCounts(0, 1);
+
+      // bump in Redux store
+      dispatch(updateFollowingBy(1));
+
       await followUser(userId);
+      await dispatch(refreshUser()).unwrap();
     } catch (err) {
       console.error("Error following user:", err);
-      // rollback on error
-      setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: false } : u)));
-      setMessages((prev) => ({ ...prev, [userId]: err?.message || "Failed to follow" }));
+
+      // rollback
+      setResults((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, isFollowing: false } : u))
+      );
+      setMessages((prev) => ({
+        ...prev,
+        [userId]: err?.message || "Failed to follow",
+      }));
     }
   };
 
@@ -55,16 +69,29 @@ export default function SearchProfile() {
       if (followCooldownRef.current.has(userId)) return;
       followCooldownRef.current.add(userId);
       setTimeout(() => followCooldownRef.current.delete(userId), COOLDOWN_MS);
+
       // optimistic update
-      setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: false } : u)));
+      setResults((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, isFollowing: false } : u))
+      );
       setMessages((prev) => ({ ...prev, [userId]: "Unfollowed" }));
-      bumpFollowingCounts(0, -1);
+
+      // bump in Redux store
+      dispatch(updateFollowingBy(-1));
+
       await unFollowUser(userId);
+      await dispatch(refreshUser()).unwrap();
     } catch (err) {
       console.error("Error unfollowing user:", err);
-      // rollback on error
-      setResults((prev) => prev.map((u) => (u.id === userId ? { ...u, isFollowing: true } : u)));
-      setMessages((prev) => ({ ...prev, [userId]: err?.message || "Failed to unfollow" }));
+
+      // rollback
+      setResults((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, isFollowing: true } : u))
+      );
+      setMessages((prev) => ({
+        ...prev,
+        [userId]: err?.message || "Failed to unfollow",
+      }));
     }
   };
 
@@ -96,7 +123,7 @@ export default function SearchProfile() {
               <div className="profile-avatar">
                 {user.image ? (
                   <img
-                    src={`${BASE_URL}${user.image}`} // prepend base url
+                    src={`${BASE_URL}${user.image}`}
                     alt={user.username}
                     className="avatar-img"
                   />
@@ -110,25 +137,25 @@ export default function SearchProfile() {
                 <p className="profile-username">{user.username}</p>
                 <p className="profile-bio">{user.bio || "No bio available"}</p>
               </div>
-           <div className="profile-action">
-  <button
-    className="follow-btn follow"
-    onClick={() => handleFollow(user.id)}
-  >
-    Follow
-  </button>
-  <button
-    className="follow-btn unfollow"
-    onClick={() => handleUnfollow(user.id)}
-  >
-    Unfollow
-  </button>
-</div>
+
+              <div className="profile-action">
+                <button
+                  className="follow-btn follow"
+                  onClick={() => handleFollow(user.id)}
+                >
+                  Follow
+                </button>
+                <button
+                  className="follow-btn unfollow"
+                  onClick={() => handleUnfollow(user.id)}
+                >
+                  Unfollow
+                </button>
+              </div>
 
               {messages[user.id] && (
                 <p className="inline-message">{messages[user.id]}</p>
               )}
-
             </div>
           ))
         )}

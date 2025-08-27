@@ -20,6 +20,18 @@ const userSlice = createSlice({
     clearUser(state) {
       state.user = null;
     },
+    updateFollowingBy(state, action) {
+      if (!state.user) return;
+      const delta = Number(action.payload) || 0;
+      const curr = Number(state.user.following || 0);
+      state.user.following = Math.max(0, curr + delta);
+    },
+    updateFollowersBy(state, action) {
+      if (!state.user) return;
+      const delta = Number(action.payload) || 0;
+      const curr = Number(state.user.followers || 0);
+      state.user.followers = Math.max(0, curr + delta);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -41,7 +53,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearUser } = userSlice.actions;
+export const { clearUser, updateFollowingBy, updateFollowersBy } = userSlice.actions;
 export default userSlice.reducer;
-
-

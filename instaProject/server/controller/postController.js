@@ -1,5 +1,6 @@
 const { Post, Follower , User, Like, Sequelize} = require("../model");
 const asyncHandler = require("express-async-handler");
+const { Notification } = require("../model");
 const createPost = asyncHandler(async (req, res) => {
   const caption = req.body.caption?.trim() || null;
 
@@ -34,7 +35,17 @@ const updatePost = asyncHandler(async (req, res) => {
   if (req.file) post.imagePath =  req.file ? `/uploads/${req.file.filename}` : null ;
 
   await post.save();
-  res.status(201).json({ message: "Post Updated", caption: post.caption , id : post.id });
+
+  try {
+    await Notification.create({
+      // include tokens so activity feed can attach exact post media
+      message: `You updated a post::postId=${post.id}::imagePath=${post.imagePath || ''}`,
+      targetUserId: req.user.id,
+      senderUserId: req.user.id,
+    });
+  } catch(_){}
+
+  res.status(201).json({ message: "Post Updated", caption: post.caption , id : post.id, imagePath: post.imagePath });
 });
 
 const deletePost = asyncHandler(async (req, res) => {
@@ -43,7 +54,19 @@ const deletePost = asyncHandler(async (req, res) => {
   const post = await Post.findOne({ where: { id, userId: req.user.id } });
   if (!post) return res.status(404).json({ message: "Post not found or unauthorized" });
 
+  const imagePath = post.imagePath || '';
+
+  // record activity before deletion (so we can capture imagePath)
+  try {
+    await Notification.create({
+      message: `You deleted a post::postId=${post.id}::imagePath=${imagePath}`,
+      targetUserId: req.user.id,
+      senderUserId: req.user.id,
+    });
+  } catch(_){}
+
   await post.destroy();
+
   res.json({ message: "Post deleted" });
 });
 

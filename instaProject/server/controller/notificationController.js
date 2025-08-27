@@ -50,16 +50,15 @@ const cleanupNotifications = asyncHandler(async () => {
 
 module.exports = { getNotifications, updateNotification, cleanupNotifications };
 
-// Build user's own activity feed (posts created, likes made, follows made)
+// Build user's own activity feed (posts created, likes made, follows made, self activities)
 const getMyActivity = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
 
-  // Pull a window from each source then merge/sort; widen window to improve mix
   const windowSize = limit * 3;
 
-  const [me, posts, likes, follows] = await Promise.all([
+  const [me, posts, likes, follows, selfNotifs] = await Promise.all([
     User.findByPk(userId, { attributes: ["id", "username", "image"] }),
     Post.findAll({ where: { userId }, order: [["createdAt", "DESC"]], limit: windowSize, attributes: ["id", "caption", "imagePath", "createdAt"] }),
     Like.findAll({
@@ -73,13 +72,29 @@ const getMyActivity = asyncHandler(async (req, res) => {
         include: [{ model: User, attributes: ["id", "username", "image"] }]
       }]
     }),
-    Follower.findAll({ where: { followerId: userId }, order: [["createdAt", "DESC"]], limit: windowSize, attributes: ["followingId", "createdAt"], include: [{ model: User, as: "FollowingUser", attributes: ["id", "username", "image"] }] })
+    Follower.findAll({ where: { followerId: userId }, order: [["createdAt", "DESC"]], limit: windowSize, attributes: ["followingId", "createdAt"], include: [{ model: User, as: "FollowingUser", attributes: ["id", "username", "image"] }] }),
+    Notification.findAll({ where: { targetUserId: userId, senderUserId: userId }, order: [["createdAt", "DESC"]], limit: windowSize, attributes: ["message", "createdAt"] })
   ]);
 
   const items = [];
   posts.forEach(p => items.push({ type: "post", createdAt: p.createdAt, data: { postId: p.id, caption: p.caption, imagePath: p.imagePath, owner: me ? { id: me.id, username: me.username, image: me.image } : null } }));
   likes.forEach(l => items.push({ type: "like", createdAt: l.createdAt, data: { postId: l.postId, caption: l.Post?.caption, imagePath: l.Post?.imagePath, owner: l.Post?.User ? { id: l.Post.User.id, username: l.Post.User.username, image: l.Post.User.image } : null } }));
   follows.forEach(f => items.push({ type: "follow", createdAt: f.createdAt, data: { userId: f.FollowingUser?.id, username: f.FollowingUser?.username, image: f.FollowingUser?.image } }));
+  selfNotifs.forEach(n => {
+    let data = { message: n.message, owner: me ? { id: me.id, username: me.username, image: me.image } : null };
+    // Parse tokens like ::postId=...::imagePath=...
+    const matchPostId = n.message.match(/::postId=([^:]*)(::|$)/);
+    const matchImg = n.message.match(/::imagePath=([^:]*)(::|$)/);
+    if (matchPostId) data.postId = matchPostId[1] || undefined;
+    if (matchImg) data.imagePath = matchImg[1] || undefined;
+    // Clean message (remove tokens, including empty)
+    data.message = data.message
+      .replace(/::postId=[^:]*/g, '')
+      .replace(/::imagePath=[^:]*/g, '')
+      .replace(/::+/g, '')
+      .trim();
+    items.push({ type: "activity", createdAt: n.createdAt, data });
+  });
 
   items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const total = items.length;

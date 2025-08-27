@@ -1,0 +1,82 @@
+.viewuser-container {
+  padding: 20px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.viewuser-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.viewuser-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f1f3f5;
+}
+
+.viewuser-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.viewuser-toprow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.viewuser-username {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+.viewuser-follow-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #2d1f6f;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.viewuser-follow-btn.unfollow {
+  background: #6b7280;
+}
+
+.viewuser-bio {
+  margin: 0;
+  color: #6b7280;
+}
+
+.viewuser-counters {
+  display: flex;
+  gap: 18px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.viewuser-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.viewuser-footnote {
+  margin-top: 12px;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}

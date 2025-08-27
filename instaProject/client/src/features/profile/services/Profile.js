@@ -21,7 +21,6 @@ export const searchUsers = async (searchData) => {
   }
 };
 
-
 export const downloadUserCSV = async () => {
   const response = await axiosInstance.get("/users/getUserData", {
     responseType: "blob"
@@ -34,4 +33,9 @@ export const downloadUserCSV = async () => {
   document.body.appendChild(link);
   link.click();
   link.remove();
+};
+
+export const getPublicProfile = async (userId) => {
+  const res = await axiosInstance.get(`/users/profile/${userId}`);
+  return res.data; // { user, posts }
 };

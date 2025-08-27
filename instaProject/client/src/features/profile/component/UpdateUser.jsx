@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { updateUser } from "../services/UpdateUser";
 import axiosInstance from "../../../AxiosInstance";
 import "../styles/UpdateUser.css";
-import { refreshUser } from "../../../store/userSlice";
 import { useDispatch } from "react-redux";
+import { refreshUser } from "../../../store/userSlice";
+
 const UpdateUser = () => {
   const dispatch = useDispatch();
+  const [toast, setToast] = useState("");
   const [formData, setFormData] = useState({
     username: "",
     bio: "",
@@ -14,7 +16,7 @@ const UpdateUser = () => {
     image: null,
   });
 
-  // ✅ Prefill user data on mount
+  
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -51,25 +53,34 @@ const UpdateUser = () => {
       if (value) submitData.append(key, value);
     });
 
-    // ✅ Debug: log FormData contents
-    for (let [key, value] of submitData.entries()) {
-      console.log(key, value);
-    }
-
     try {
-      const res = await updateUser(submitData);
-      alert("Profile updated successfully!");
-      console.log("Updated user:", res);
-      // Immediately refresh global user so Sidebar and others update
+      await updateUser(submitData);
+      setToast("✅ Profile updated successfully!");
+      setTimeout(() => setToast(""), 2000);
       await dispatch(refreshUser()).unwrap();
     } catch (err) {
       console.error(err);
-      alert( "Error updating profile");
+      setToast("❌ Validation failed . use Strong password (Example1) and correct email format(example@gmail.com) ");
+      setTimeout(() => setToast(""), 2500);
     }
   };
 
   return (
     <div className="updateUserContainer">
+      {toast && (
+        <div style={{
+          position: "fixed",
+          top: 16,
+          left: "50%",
+          transform: "translateX(-50%)",
+          background: toast.startsWith("✅") ? "#16a34a" : "#dc2626",
+          color: "#fff",
+          padding: "10px 14px",
+          borderRadius: 8,
+          zIndex: 1000,
+          fontWeight: 600
+        }}>{toast}</div>
+      )}
       <h2>Update Profile</h2>
       <form className="updateUserForm" onSubmit={handleSubmit}>
         <div className="formRow">

@@ -5,6 +5,7 @@ import {
   removeLike,
   followUser,
   searchPosts,
+  unFollowUser,
 } from "../services/Home";
 import PostCard from "../../../components/Home/Postcard";
 import "../styles/Home.css";
@@ -143,7 +144,7 @@ const normalizePosts = (posts = []) =>
     followCooldownRef.current.add(userId);
     setTimeout(() => followCooldownRef.current.delete(userId), COOLDOWN_MS);
     setPosts((prev) => prev.map((p) => p.userId === userId ? { ...p, followed: false } : p));
-    const res = await followUser(userId, true); // Pass true for unfollow
+    const res = await unFollowUser(userId);
     if (!res) {
       setPosts((prev) => prev.map((p) => p.userId === userId ? { ...p, followed: true } : p));
     }

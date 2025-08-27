@@ -25,7 +25,8 @@ userRouter.get("/getCurrentuser", tokenAuthenticator, searchLimiter, getCurrentU
 
 userRouter.get("/getuserData",tokenAuthenticator, exportUserCSV);
 
-
-
+// New: public profile with counters and posts
+const { getPublicProfile } = require('../controller/userPublicController');
+userRouter.get('/profile/:id', tokenAuthenticator, getPublicProfile);
 
 module.exports = userRouter;

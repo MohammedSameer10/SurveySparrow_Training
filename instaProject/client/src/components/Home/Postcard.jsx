@@ -29,6 +29,8 @@ const PostCard = ({ post, onLike, onUnlike, onFollow, onUnfollow, unfollowMode =
     setTimeout(() => setFeedback(""), 1500);
   };
 
+  const showUnfollow = !!onUnfollow || unfollowMode;
+
   return (
     <div className="post-card">
       {/* Header */}
@@ -48,13 +50,13 @@ const PostCard = ({ post, onLike, onUnlike, onFollow, onUnfollow, unfollowMode =
           </span>
         </div>
         {!post.isOwnPost && (
-          unfollowMode ? (
-            <button className="follow-btn" onClick={handleHandleUnfollow}>Unfollow</button>
+          showUnfollow ? (
+            <button className="follow-btn" onClick={handleHandleUnfollow} disabled={!onUnfollow}>Unfollow</button>
           ) : (
             <button
               className="follow-btn"
               onClick={handleHandleFollow}
-              disabled={post.followed}
+              disabled={!onFollow || post.followed}
             >
               {post.followed ? "Followed" : "Follow"}
             </button>

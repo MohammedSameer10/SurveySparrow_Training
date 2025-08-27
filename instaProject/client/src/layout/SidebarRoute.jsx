@@ -26,7 +26,7 @@ export default function SidebarRoute() {
 
           <button className="addpost-btn" onClick={() => navigate('/addPost', { state: { from: location.pathname } })}>
             <span>＋</span>
-            <span>add new post</span>
+            <span style={{marginRight:"100px"}}>add new post</span>
           </button>
         </div>
         <Outlet />

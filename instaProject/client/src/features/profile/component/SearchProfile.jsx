@@ -6,9 +6,11 @@ import axiosInstance from "../../../AxiosInstance";
 import "../styles/SearchProfile.css";
 import { refreshUser, updateFollowingBy } from "../../../store/userSlice.js";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchProfile() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [messages, setMessages] = useState({}); // { [userId]: message }
@@ -119,7 +121,7 @@ export default function SearchProfile() {
           <p className="no-results">No results found</p>
         ) : (
           results.map((user) => (
-            <div key={user.id} className="profile-card">
+            <div key={user.id} className="profile-card" onClick={() => navigate(`/user/${user.id}`)}>
               <div className="profile-avatar">
                 {user.image ? (
                   <img
@@ -138,7 +140,7 @@ export default function SearchProfile() {
                 <p className="profile-bio">{user.bio || "No bio available"}</p>
               </div>
 
-              <div className="profile-action">
+              <div className="profile-action" onClick={(e) => e.stopPropagation()}>
                 <button
                   className="follow-btn follow"
                   onClick={() => handleFollow(user.id)}

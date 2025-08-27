@@ -13,6 +13,7 @@ import Notification from './features/notification/component/Notification';
 import DownloadCsv from "./features/profile/component/DownloadCsv";
 import FollowPage from "./features/profile/component/FollowPage";
 import CheckActivity from "./features/profile/component/CheckActivity";
+import ViewUser from "./features/profile/component/ViewUser";
 
 
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/DownloadCsv" element={<DownloadCsv />} />
             <Route path="/followPage" element={<FollowPage />} />
             <Route path="/activity" element={<CheckActivity />} />
+            <Route path="/user/:id" element={<ViewUser />} />
           </Route>
         </Routes>
       </Router>

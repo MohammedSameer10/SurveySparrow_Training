@@ -17,6 +17,13 @@ export default function SidebarRoute() {
         {/* Global header actions */}
         <div className="header-actions">
           <button className="back-btn" onClick={handleBack}>← Back</button>
+
+          {/* Center brand */}
+          <div className="brand">
+            <img src="/vite.svg" alt="logo" className="brand-logo" />
+            <span className="brand-title">Socigram</span>
+          </div>
+
           <button className="addpost-btn" onClick={() => navigate('/addPost', { state: { from: location.pathname } })}>
             <span>＋</span>
             <span>add new post</span>

@@ -7,11 +7,16 @@ export default function AddPost({ onSuccess }) {
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
   const [showToast, setShowToast] = useState(false);
+  const [errorToast, setErrorToast] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!caption && !image) return; // allow caption-only or image-only
+    if (!caption && !image) {
+      setErrorToast("⚠️ Please enter a caption or choose an image.");
+      setTimeout(() => setErrorToast(""), 2500);
+      return;
+    }
 
     try {
       const formData = new FormData();
@@ -24,7 +29,7 @@ export default function AddPost({ onSuccess }) {
       setImage(null);
       setShowToast(true);
 
-      setTimeout(() => setShowToast(false), 3000);
+      setTimeout(() => setShowToast(false), 2600);
 
       if (onSuccess) {
         onSuccess(res);
@@ -49,6 +54,16 @@ export default function AddPost({ onSuccess }) {
 
   return (
     <div className="addpost-container">
+      {/* Top-centered toast area */}
+      <div className="toast-container">
+        {errorToast && (
+          <div className="toast-error">{errorToast}</div>
+        )}
+        {showToast && (
+          <div className="toast-success">✅ Your post has been added!</div>
+        )}
+      </div>
+
       <form className="addpost-form" onSubmit={handleSubmit}>
         <h2 className="form-title">Add New Post</h2>
         <input
@@ -68,10 +83,6 @@ export default function AddPost({ onSuccess }) {
           Submit
         </button>
       </form>
-
-      {showToast && (
-        <div className="toast-success">✅ Your post has been added!</div>
-      )}
     </div>
   );
 }

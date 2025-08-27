@@ -3,8 +3,10 @@ import { getUserLikes } from "../services/Like";
 import { removeLike } from "../services/Home";
 import PostCard from "../../../components/Home/Postcard";
 import "../styles/ViewLikes.css";
+import { useSelector } from "react-redux";
 
 export default function ViewLike() {
+  const currentUser = useSelector((state) => state.user.user);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -25,6 +27,7 @@ useEffect(() => {
       profileImage: like.user?.image || "/default-profile.png",
       likeCount: like.likeCount || 0,
       likedByCurrentUser: like.likedByCurrentUser || false,
+      isOwnPost: like.user?.id && currentUser?.id ? like.user.id === currentUser.id : false,
     }));
 
     if (page === 1) {
@@ -37,7 +40,7 @@ useEffect(() => {
     setIsLoadingMore(false);
   };
   fetchLikes();
-}, [page]);
+}, [page, currentUser]);
 
   const handleUnlike = async (postId) => {
     // optimistic remove from list
@@ -59,7 +62,7 @@ useEffect(() => {
     <div className="viewlike-container">
       {posts.map((post) => (
         <div key={post.id} style={{ opacity: removingIds.includes(post.id) ? 0.5 : 1 }}>
-          <PostCard post={post} onUnlike={handleUnlike} />
+          <PostCard post={post} onUnlike={handleUnlike} unfollowMode={true} onUnfollow={() => {}} />
         </div>
       ))}
 

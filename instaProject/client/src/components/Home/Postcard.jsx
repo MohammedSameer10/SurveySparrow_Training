@@ -2,25 +2,31 @@ import React, { useState } from "react";
 import "./PostCard.css";
 import { Heart } from "lucide-react";
 
-const PostCard = ({ post, onLike, onUnlike, onFollow }) => {
+const PostCard = ({ post, onLike, onUnlike, onFollow, onUnfollow, unfollowMode = false }) => {
   const [feedback, setFeedback] = useState(""); // Feedback message
 
   const handleLike = () => {
-    onLike(post.id);
+    onLike && onLike(post.id);
     setFeedback("You liked this post");
     setTimeout(() => setFeedback(""), 1500);
   };
 
-  const handleUnlike = () => {
-    onUnlike(post.id);
+  const handleHandleUnlike = () => {
+    onUnlike && onUnlike(post.id);
     setFeedback("You removed your like");
     setTimeout(() => setFeedback(""), 1500);
   };
 
-  const handleFollow = () => {
-    onFollow(post.userId);
+  const handleHandleFollow = () => {
+    onFollow && onFollow(post.userId);
     setFeedback("You followed this user 🎉");
-    setTimeout(() => setFeedback(""), 1500); // hide after 1.5s
+    setTimeout(() => setFeedback(""), 1500);
+  };
+
+  const handleHandleUnfollow = () => {
+    onUnfollow && onUnfollow(post.userId);
+    setFeedback("You unfollowed this user");
+    setTimeout(() => setFeedback(""), 1500);
   };
 
   return (
@@ -37,19 +43,23 @@ const PostCard = ({ post, onLike, onUnlike, onFollow }) => {
         <div className="post-user-info">
           <h4>{post.username || "Unknown User"}</h4>
           <span>
-            {new Date(post.createdAt).toLocaleDateString()}{" "}
+            {new Date(post.createdAt).toLocaleDateString()} {" "}
             {new Date(post.createdAt).toLocaleTimeString()}
           </span>
         </div>
-      {!post.isOwnPost && (
-      <button
-    className="follow-btn"
-    onClick={handleFollow}
-    disabled={post.followed}
-      >
-    {post.followed ? "Followed" : "Follow"}
-  </button>
-)}
+        {!post.isOwnPost && (
+          unfollowMode ? (
+            <button className="follow-btn" onClick={handleHandleUnfollow}>Unfollow</button>
+          ) : (
+            <button
+              className="follow-btn"
+              onClick={handleHandleFollow}
+              disabled={post.followed}
+            >
+              {post.followed ? "Followed" : "Follow"}
+            </button>
+          )
+        )}
 
       </div>
 
@@ -69,7 +79,7 @@ const PostCard = ({ post, onLike, onUnlike, onFollow }) => {
       <div className="post-footer">
         <div className="left-actions">
           <button
-            onClick={post.likedByCurrentUser ? handleUnlike : handleLike}
+            onClick={post.likedByCurrentUser ? handleHandleUnlike : handleLike}
             className={post.likedByCurrentUser ? "liked" : ""}
             aria-label={post.likedByCurrentUser ? "Unlike" : "Like"}
           >

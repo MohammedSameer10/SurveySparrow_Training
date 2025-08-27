@@ -25,6 +25,22 @@
   border-bottom: 1px solid #e9ecef;
 }
 
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-logo {
+  width: 28px;
+  height: 28px;
+}
+.brand-title {
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: #2d1f6f;
+}
+
 .back-btn {
   display: inline-flex;
   align-items: center;

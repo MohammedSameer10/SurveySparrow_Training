@@ -62,15 +62,19 @@ const Home = () => {
 
 const normalizePosts = (posts = []) =>
   posts.map((p) => {
-    if (p.User) {
-      return {
-        ...p,
-        username: p.User.username || p.username || "",
-        profileImage: p.User.image || p.profileImage || "",
-        userId: p.User.id || p.userId,
-      };
-    }
-    return p;
+    const base = p.User ? {
+      ...p,
+      username: p.User.username || p.username || "",
+      profileImage: p.User.image || p.profileImage || "",
+      userId: p.User.id || p.userId,
+    } : p;
+    const isOwn = user?.id && base.userId === user.id;
+    return {
+      ...base,
+      isOwnPost: !!isOwn,
+      // Home feed only contains self and following users → treat as followed unless it's own post
+      followed: !isOwn,
+    };
   });
 
 
@@ -131,6 +135,17 @@ const normalizePosts = (posts = []) =>
     const res = await followUser(userId);
     if (!res) {
       setPosts((prev) => prev.map((p) => p.userId === userId ? { ...p, followed: false } : p));
+    }
+  };
+
+  const handleUnfollow = async (userId) => {
+    if (followCooldownRef.current.has(userId)) return;
+    followCooldownRef.current.add(userId);
+    setTimeout(() => followCooldownRef.current.delete(userId), COOLDOWN_MS);
+    setPosts((prev) => prev.map((p) => p.userId === userId ? { ...p, followed: false } : p));
+    const res = await followUser(userId, true); // Pass true for unfollow
+    if (!res) {
+      setPosts((prev) => prev.map((p) => p.userId === userId ? { ...p, followed: true } : p));
     }
   };
 
@@ -234,6 +249,8 @@ const normalizePosts = (posts = []) =>
             onLike={handleLike}
             onUnlike={handleUnlike}
             onFollow={handleFollow}
+            onUnfollow={handleUnfollow}
+            unfollowMode={true}
           />
         ))}
       </div>

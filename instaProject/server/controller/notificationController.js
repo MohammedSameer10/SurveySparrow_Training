@@ -6,7 +6,6 @@ const getNotifications = asyncHandler(async (req, res) => {
     where: {
       targetUserId: req.user.id,
       isRead: false,
-      // Exclude self-generated notifications
       senderUserId: { [Sequelize.Op.ne]: req.user.id }
     },
     include: [
@@ -50,7 +49,6 @@ const cleanupNotifications = asyncHandler(async () => {
 
 module.exports = { getNotifications, updateNotification, cleanupNotifications };
 
-// Build user's own activity feed (posts created, likes made, follows made, self activities)
 const getMyActivity = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);

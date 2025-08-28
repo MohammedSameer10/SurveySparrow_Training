@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const errorHandler = require('./middleware/errorhandler')
 const models = require('./model'); 
+const { registerModelHooks } = require('./opensearch/sync');
 const userRouter = require('./routes/userRoutes');
 const postRouter = require('./routes/postRoutes');
 const likeRouter = require('./routes/likeRoutes');
@@ -43,6 +44,9 @@ cron.schedule("0 0 * * *", () => {
   cleanupNotifications();
 });
 
+
+// Register OpenSearch sync hooks before syncing DB
+registerModelHooks(models);
 
 models.sequelize.sync({ alter: true })
     .then(() => {

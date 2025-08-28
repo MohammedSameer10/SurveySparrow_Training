@@ -1,4 +1,5 @@
 const { Post, Follower , User, Like, Sequelize} = require("../model");
+const osClient = require('../opensearch/client');
 const asyncHandler = require("express-async-handler");
 const { Notification } = require("../model");
 const createPost = asyncHandler(async (req, res) => {
@@ -135,7 +136,7 @@ const getFeeds = asyncHandler(async (req, res) => {
 const searchPosts = asyncHandler(async (req, res) => {
   const {
     searchTerm = "",
-    filterBy = "caption", 
+    filterBy = "caption",
     sortOrder = "DESC",
     page = 1,
     limit = 20
@@ -149,37 +150,80 @@ const searchPosts = asyncHandler(async (req, res) => {
   });
   const allowedUserIds = [userId, ...followings.map(f => f.followingId)];
 
-  let targetUserIds = allowedUserIds;
+  let osIds = [];
+  let total = 0;
+  const wildcard = (s) => `*${String(s || '').replace(/[\\*?]/g, '\\$&')}*`;
 
-  if (filterBy === "username" && searchTerm) {
-    const matchedUsers = await User.findAll({
-      where: {
-        id: allowedUserIds,
-        username: { [Sequelize.Op.iLike]: `%${searchTerm}%` }
-      },
-      attributes: ["id"],
-      raw: true
+  if (filterBy === 'username' && searchTerm) {
+    const ures = await osClient.search({
+      index: 'users',
+      body: {
+        query: {
+          bool: {
+            must: [
+              { wildcard: { 'username.raw': { value: wildcard(searchTerm), case_insensitive: true } } }
+            ],
+            filter: [ { ids: { values: allowedUserIds } } ]
+          }
+        },
+        _source: false,
+        size: 500
+      }
     });
+    const userHits = ures.body.hits.hits;
+    const targetUserIds = userHits.map(h => h._id);
+    if (targetUserIds.length === 0) return res.json({ postLength: 0, posts: [] });
 
-    targetUserIds = matchedUsers.map(u => u.id);
-    if (targetUserIds.length === 0) return res.json({ posts: [] });
+    const pres = await osClient.search({
+      index: 'posts',
+      body: {
+        query: { terms: { userId: targetUserIds } },
+        sort: [ { createdAt: { order: sortOrder || 'DESC' } }, { _id: 'asc' } ],
+        from: (page - 1) * limit,
+        size: limit
+      }
+    });
+    const hits = pres.body.hits.hits;
+    osIds = hits.map(h => h._id);
+    total = pres.body.hits.total.value || 0;
+  } else {
+    const must = [ { terms: { userId: allowedUserIds } } ];
+    const query = searchTerm
+      ? {
+          bool: {
+            must: [
+              { terms: { userId: allowedUserIds } },
+              { wildcard: { 'caption.raw': { value: wildcard(searchTerm), case_insensitive: true } } }
+            ]
+          }
+        }
+      : { terms: { userId: allowedUserIds } };
+    const pres = await osClient.search({
+      index: 'posts',
+      body: {
+        query,
+        sort: [ { createdAt: { order: sortOrder || 'DESC' } }, { _id: 'asc' } ],
+        from: (page - 1) * limit,
+        size: limit
+      }
+    });
+    const hits = pres.body.hits.hits;
+    osIds = hits.map(h => h._id);
+    total = pres.body.hits.total.value || 0;
   }
 
-  const whereClause = { userId: targetUserIds };
-  if (filterBy === "caption" && searchTerm) {
-    whereClause.caption = { [Sequelize.Op.iLike]: `%${searchTerm}%` };
-  }
-
-  const posts = await Post.findAll({
-    where: whereClause,
-    include: [{ model: User, attributes: ["id", "username", "image"] }],
-    order: [["createdAt", sortOrder]],
-    offset: (page - 1) * limit,
-    limit: parseInt(limit),
+  if (osIds.length === 0) return res.json({ postLength: 0, posts: [] });
+  const records = await Post.findAll({
+    where: { id: osIds },
+    include: [{ model: User, attributes: [ 'id', 'username', 'image' ] }]
   });
+  const byId = new Map(records.map(r => [r.id, r]));
+  const ordered = osIds.map(id => byId.get(id)).filter(Boolean);
 
-  res.json({postLength:posts.length, posts });
+  res.json({ postLength: ordered.length, posts: ordered, total });
 });
+
+
 const searchMyPost = asyncHandler(async (req, res) => {
   const { searchTerm = "", page = 1, limit = 20, sortOrder = "DESC" } = req.body;
   const userId = req.user.id;

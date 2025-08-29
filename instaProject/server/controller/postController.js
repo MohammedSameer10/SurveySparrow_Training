@@ -24,7 +24,6 @@ const createPost = asyncHandler(async (req, res) => {
 });
 
 
-
 const updatePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { caption } = req.body;
@@ -39,7 +38,6 @@ const updatePost = asyncHandler(async (req, res) => {
 
   try {
     await Notification.create({
-      // include tokens so activity feed can attach exact post media
       message: `You updated a post::postId=${post.id}::imagePath=${post.imagePath || ''}`,
       targetUserId: req.user.id,
       senderUserId: req.user.id,
@@ -57,7 +55,6 @@ const deletePost = asyncHandler(async (req, res) => {
 
   const imagePath = post.imagePath || '';
 
-  // record activity before deletion (so we can capture imagePath)
   try {
     await Notification.create({
       message: `You deleted a post::postId=${post.id}::imagePath=${imagePath}`,
@@ -78,19 +75,16 @@ const getFeeds = asyncHandler(async (req, res) => {
 
   const currentUserId = req.user.id;  
 
-  // Get the users the current user is following
   const following = await Follower.findAll({
     where: { followerId: currentUserId },
     attributes: ["followingId"]
   });
 
   const followingIds = following.map(f => f.followingId);
-  followingIds.push(currentUserId); // include self posts
+  followingIds.push(currentUserId); 
 
-  // Count total posts for pagination
   const total = await Post.count({ where: { userId: followingIds } });
 
-  // Fetch posts including user info and likes with proper pagination
   const posts = await Post.findAll({
     where: { userId: followingIds },
     include: [
@@ -99,7 +93,7 @@ const getFeeds = asyncHandler(async (req, res) => {
         attributes: ["id", "username", "image"]
       },
       {
-        model: Like, // include likes
+        model: Like, 
         attributes: ["id", "userId"]
       }
     ],
@@ -108,7 +102,6 @@ const getFeeds = asyncHandler(async (req, res) => {
     offset
   });
 
-  // Flatten posts and include likeCount
   const flattened = posts.map(post => ({
     id: post.id,
     caption: post.caption,
@@ -170,6 +163,8 @@ const searchPosts = asyncHandler(async (req, res) => {
         size: 500
       }
     });
+
+    
     const userHits = ures.body.hits.hits;
     const targetUserIds = userHits.map(h => h._id);
     if (targetUserIds.length === 0) return res.json({ postLength: 0, posts: [] });

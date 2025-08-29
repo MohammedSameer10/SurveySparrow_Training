@@ -1,0 +1,177 @@
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:30:51.634Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:30:54.529Z"}
+info: POST /users/login | User: Anonymous | Status: 200 | 255ms {"timestamp":"2025-08-29T05:31:23.554Z"}
+info: GET /users/getCurrentuser | User: sameer_30 | Status: 304 | 127ms {"timestamp":"2025-08-29T05:31:23.688Z"}
+info: GET /uploads/1756284833830-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:31:24.208Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 191ms {"timestamp":"2025-08-29T05:31:24.433Z"}
+info: GET /uploads/1756189953803-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:31:24.463Z"}
+info: GET /uploads/1756185339062-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:31:24.466Z"}
+info: GET /uploads/1756226800305-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:31:24.467Z"}
+info: {"action":"searchPosts","filterBy":"caption","userId":"a43da8b9-8e15-40c4-8130-dfb63c10a212","searchTerm":"sam'","osQuery":{"query":{"bool":{"must":[{"terms":{"userId":["a43da8b9-8e15-40c4-8130-dfb63c10a212","80f01616-3ba1-4c1a-9c71-7d5b53e563eb","393cb119-3fe9-4c6a-8e71-6ca53ce6668a","71220c9e-47a0-457e-8f2a-9544388fccde","7d97208d-96fb-4d20-b16a-7ce0df3cb969","28a5e0d8-bb33-437d-aa7d-4f5b8cf8463c","b1784f87-3033-4356-acad-f9d65aafc087","5e820fa1-f64e-41a2-950c-d39631d5dc10","d66a5fb9-721c-48c5-ba2c-751ce6f7addc","8671f3c3-007d-4ccb-babe-7835140f8dce","52f68009-20ac-4fec-bcd7-a068db3b8be3"]}},{"wildcard":{"caption.raw":{"value":"*sam'*","case_insensitive":true}}}]}},"sort":[{"createdAt":{"order":"DESC"}},{"_id":"asc"}],"from":0,"size":50}} {"timestamp":"2025-08-29T05:31:29.446Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 66ms {"timestamp":"2025-08-29T05:31:29.491Z"}
+info: {"action":"searchPosts","filterBy":"caption","userId":"a43da8b9-8e15-40c4-8130-dfb63c10a212","searchTerm":"sam","osQuery":{"query":{"bool":{"must":[{"terms":{"userId":["a43da8b9-8e15-40c4-8130-dfb63c10a212","80f01616-3ba1-4c1a-9c71-7d5b53e563eb","393cb119-3fe9-4c6a-8e71-6ca53ce6668a","71220c9e-47a0-457e-8f2a-9544388fccde","7d97208d-96fb-4d20-b16a-7ce0df3cb969","28a5e0d8-bb33-437d-aa7d-4f5b8cf8463c","b1784f87-3033-4356-acad-f9d65aafc087","5e820fa1-f64e-41a2-950c-d39631d5dc10","d66a5fb9-721c-48c5-ba2c-751ce6f7addc","8671f3c3-007d-4ccb-babe-7835140f8dce","52f68009-20ac-4fec-bcd7-a068db3b8be3"]}},{"wildcard":{"caption.raw":{"value":"*sam*","case_insensitive":true}}}]}},"sort":[{"createdAt":{"order":"DESC"}},{"_id":"asc"}],"from":0,"size":50}} {"timestamp":"2025-08-29T05:31:30.384Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 20ms {"timestamp":"2025-08-29T05:31:30.396Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 17ms {"timestamp":"2025-08-29T05:31:34.073Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 14ms {"timestamp":"2025-08-29T05:31:35.718Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 16ms {"timestamp":"2025-08-29T05:31:36.367Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 171ms {"timestamp":"2025-08-29T05:31:37.057Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 18ms {"timestamp":"2025-08-29T05:31:38.559Z"}
+info: POST /users/login | User: Anonymous | Status: 200 | 178ms {"timestamp":"2025-08-29T05:32:12.871Z"}
+info: GET /users/getCurrentuser | User: sameer_30 | Status: 304 | 119ms {"timestamp":"2025-08-29T05:32:12.994Z"}
+info: GET /uploads/1756284833830-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:32:13.524Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 163ms {"timestamp":"2025-08-29T05:32:13.716Z"}
+info: GET /uploads/1756226800305-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:32:13.739Z"}
+info: GET /uploads/1756189953803-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:32:13.742Z"}
+info: GET /uploads/1756185339062-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:32:13.742Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 18ms {"timestamp":"2025-08-29T05:32:24.135Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:33:47.216Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:33:49.045Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:33:49.992Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:33:50.743Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:33:52.923Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:33:54.576Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 208ms {"timestamp":"2025-08-29T05:34:07.457Z"}
+info: GET /users/getCurrentuser | User: sameer_30 | Status: 304 | 225ms {"timestamp":"2025-08-29T05:34:07.458Z"}
+info: GET /uploads/1756284833830-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:07.462Z"}
+info: GET /uploads/1756189953803-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:07.475Z"}
+info: GET /uploads/1756226800305-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:07.476Z"}
+info: GET /uploads/1756185339062-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:07.477Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 64ms {"timestamp":"2025-08-29T05:34:14.266Z"}
+info: GET /follow/following | User: sameer_30 | Status: 200 | 212ms {"timestamp":"2025-08-29T05:34:18.730Z"}
+info: GET /uploads/1756099045626-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:18.740Z"}
+info: GET /uploads/1755952069305-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:18.742Z"}
+info: GET /uploads/1756054540618-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:18.743Z"}
+info: GET /uploads/1756103191568-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:34:18.744Z"}
+info: GET /uploads/1756103440677-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:34:18.745Z"}
+info: GET /uploads/1756103299727-image.jpg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:34:18.746Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 171ms {"timestamp":"2025-08-29T05:34:22.279Z"}
+info: GET /uploads/1756226800305-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:22.312Z"}
+info: GET /uploads/1756189953803-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:34:22.313Z"}
+info: GET /uploads/1756185339062-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:34:22.314Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:34:49.738Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:34:51.466Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:34:53.289Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:34:55.187Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:34:56.953Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:34:59.231Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:35:00.898Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:35:02.635Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:35:04.341Z"}
+info: GET /users/getCurrentuser | User: sameer_30 | Status: 304 | 226ms {"timestamp":"2025-08-29T05:35:05.360Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 216ms {"timestamp":"2025-08-29T05:35:05.364Z"}
+info: GET /uploads/1756284833830-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:35:05.366Z"}
+info: GET /uploads/1756226800305-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:35:05.374Z"}
+info: GET /uploads/1756189953803-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:35:05.379Z"}
+info: GET /uploads/1756185339062-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:35:05.385Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 36ms {"timestamp":"2025-08-29T05:35:10.790Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 229ms {"timestamp":"2025-08-29T05:35:28.619Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 27ms {"timestamp":"2025-08-29T05:35:30.428Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 11ms {"timestamp":"2025-08-29T05:35:31.036Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:36:08.441Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:36:10.140Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 175ms {"timestamp":"2025-08-29T05:36:14.095Z"}
+info: GET /users/getCurrentuser | User: sameer_30 | Status: 304 | 191ms {"timestamp":"2025-08-29T05:36:14.096Z"}
+info: GET /uploads/1756284833830-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:36:14.101Z"}
+info: GET /uploads/1756226800305-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:36:14.102Z"}
+info: GET /uploads/1756189953803-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:36:14.105Z"}
+info: GET /uploads/1756185339062-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:36:14.110Z"}
+info: POST /post/search | User: sameer_30 | Status: 500 | 44ms {"timestamp":"2025-08-29T05:36:16.623Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:38:22.192Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:38:23.917Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 356ms {"timestamp":"2025-08-29T05:38:34.609Z"}
+info: GET /uploads/1756103440677-image.jpeg | User: Anonymous | Status: 304 | 3ms {"timestamp":"2025-08-29T05:38:34.623Z"}
+info: GET /uploads/1756103496131-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:34.624Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 195ms {"timestamp":"2025-08-29T05:38:36.140Z"}
+info: GET /uploads/1756054540618-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:36.151Z"}
+info: GET /uploads/1756054592501-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:36.153Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 152ms {"timestamp":"2025-08-29T05:38:36.168Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 214ms {"timestamp":"2025-08-29T05:38:37.157Z"}
+info: GET /uploads/1756103191568-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.199Z"}
+info: GET /uploads/1756044350942-image.jpg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.199Z"}
+info: GET /uploads/1756104608593-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:38:37.200Z"}
+info: GET /uploads/1756022455400-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:38:37.203Z"}
+info: GET /uploads/1756022728404-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:38:37.205Z"}
+info: GET /uploads/1756099045626-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:38:37.206Z"}
+info: GET /uploads/1756022236134-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:38:37.207Z"}
+info: GET /uploads/1756022537571-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.208Z"}
+info: GET /uploads/1756101152515-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:38:37.208Z"}
+info: GET /uploads/1756034723744-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.210Z"}
+info: GET /uploads/1756101251294-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.210Z"}
+info: GET /uploads/1755974971395-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.210Z"}
+info: GET /uploads/1755970152037-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.212Z"}
+info: GET /uploads/1755952069305-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.212Z"}
+info: GET /uploads/1755679093845-image.webp | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:38:37.212Z"}
+info: GET /uploads/1755763343674-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:37.213Z"}
+info: GET /uploads/1755678081309-image.webp | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:38:37.213Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 193ms {"timestamp":"2025-08-29T05:38:38.485Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 182ms {"timestamp":"2025-08-29T05:38:41.198Z"}
+info: GET /users/getCurrentuser | User: sameer_30 | Status: 304 | 185ms {"timestamp":"2025-08-29T05:38:41.199Z"}
+info: GET /uploads/1756284833830-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:38:41.202Z"}
+info: GET /uploads/1756226800305-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:38:41.206Z"}
+info: GET /uploads/1756189953803-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:41.210Z"}
+info: GET /uploads/1756185339062-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:38:41.217Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 231ms {"timestamp":"2025-08-29T05:38:50.828Z"}
+info: GET /uploads/1756103191568-image.jpeg | User: Anonymous | Status: 304 | 3ms {"timestamp":"2025-08-29T05:38:52.624Z"}
+info: GET /uploads/1756104608593-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:38:52.625Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 211ms {"timestamp":"2025-08-29T05:38:59.032Z"}
+info: GET /uploads/1756044350942-image.jpg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:39:01.092Z"}
+info: GET /uploads/1756034723744-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:01.093Z"}
+info: GET /uploads/1756022728404-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:39:01.095Z"}
+info: GET /uploads/1756022537571-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:39:01.096Z"}
+info: GET /uploads/1756022455400-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:39:01.096Z"}
+info: GET /uploads/1756022236134-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:01.097Z"}
+info: GET /uploads/1756099045626-image.jpeg | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:39:03.117Z"}
+info: GET /uploads/1756101152515-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:39:03.145Z"}
+info: GET /uploads/1755974971395-image.webp | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:03.173Z"}
+info: GET /uploads/1755970152037-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:39:03.202Z"}
+info: GET /uploads/1756101251294-image.webp | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:03.231Z"}
+info: GET /uploads/1755952069305-image.webp | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:03.263Z"}
+info: GET /uploads/1755763343674-image.webp | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:39:05.157Z"}
+info: GET /uploads/1755679093845-image.webp | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:05.184Z"}
+info: GET /uploads/1755678081309-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:39:05.210Z"}
+info: POST /post/create | User: sameer_30 | Status: 201 | 446ms {"timestamp":"2025-08-29T05:39:42.810Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 176ms {"timestamp":"2025-08-29T05:39:44.774Z"}
+info: GET /uploads/1756445982566-image.jpeg | User: Anonymous | Status: 200 | 5ms {"timestamp":"2025-08-29T05:39:46.756Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 1149ms {"timestamp":"2025-08-29T05:39:57.612Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 184ms {"timestamp":"2025-08-29T05:39:59.666Z"}
+info: GET /users/getCurrentuser | User: sameer_30 | Status: 304 | 187ms {"timestamp":"2025-08-29T05:39:59.667Z"}
+info: GET /uploads/1756445982566-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:59.669Z"}
+info: GET /uploads/1756284833830-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:39:59.670Z"}
+info: GET /uploads/1756226800305-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:59.670Z"}
+info: GET /uploads/1756189953803-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:39:59.673Z"}
+info: POST /post/create | User: sameer_30 | Status: 201 | 207ms {"timestamp":"2025-08-29T05:40:05.942Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 126ms {"timestamp":"2025-08-29T05:40:06.082Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 181ms {"timestamp":"2025-08-29T05:40:10.022Z"}
+info: GET /uploads/1756034723744-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:10.032Z"}
+info: GET /uploads/1756022537571-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:10.035Z"}
+info: GET /uploads/1756022236134-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:40:10.035Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 225ms {"timestamp":"2025-08-29T05:40:12.616Z"}
+info: GET /uploads/1756103191568-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:12.628Z"}
+info: GET /uploads/1756054592501-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:12.628Z"}
+info: GET /uploads/1756054540618-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:12.630Z"}
+info: GET /uploads/1756104608593-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:12.631Z"}
+info: GET /uploads/1756022728404-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:12.632Z"}
+info: GET /uploads/1756044350942-image.jpg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:12.632Z"}
+info: GET /uploads/1756099045626-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:40:12.632Z"}
+info: GET /uploads/1756101251294-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:12.633Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 131ms {"timestamp":"2025-08-29T05:40:12.703Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 180ms {"timestamp":"2025-08-29T05:40:13.538Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 194ms {"timestamp":"2025-08-29T05:40:14.281Z"}
+info: POST /post/getFeeds | User: sameer_30 | Status: 200 | 181ms {"timestamp":"2025-08-29T05:40:16.125Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 176ms {"timestamp":"2025-08-29T05:40:18.132Z"}
+info: POST /post/search | User: sameer_30 | Status: 200 | 194ms {"timestamp":"2025-08-29T05:40:30.837Z"}
+info: GET /uploads/1756104608593-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:32.796Z"}
+info: GET /uploads/1756103191568-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:40:32.797Z"}
+info: GET /uploads/1756044350942-image.jpg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:32.798Z"}
+info: GET /uploads/1756034723744-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:32.799Z"}
+info: GET /uploads/1756103496131-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:40:32.799Z"}
+info: GET /uploads/1756103440677-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:32.800Z"}
+info: GET /uploads/1756022728404-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:34.827Z"}
+info: GET /uploads/1756022537571-image.webp | User: Anonymous | Status: 304 | 2ms {"timestamp":"2025-08-29T05:40:34.850Z"}
+info: GET /uploads/1756022455400-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:34.878Z"}
+info: GET /uploads/1756022236134-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:34.910Z"}
+info: GET /uploads/1756099045626-image.jpeg | User: Anonymous | Status: 304 | 0ms {"timestamp":"2025-08-29T05:40:34.938Z"}
+info: GET /uploads/1756101152515-image.jpeg | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:34.969Z"}
+info: GET /uploads/1756101251294-image.webp | User: Anonymous | Status: 304 | 1ms {"timestamp":"2025-08-29T05:40:36.858Z"}
+info: Server started at port : 8080 {"timestamp":"2025-08-29T05:43:58.744Z"}
+info: Database synced successfully {"timestamp":"2025-08-29T05:44:00.490Z"}

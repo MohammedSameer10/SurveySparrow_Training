@@ -45,7 +45,6 @@ cron.schedule("0 0 * * *", () => {
 });
 
 
-// Register OpenSearch sync hooks before syncing DB
 registerModelHooks(models);
 
 models.sequelize.sync({ alter: true })
